@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from "react";
-import {Text,  Viewt} from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { View } from "react-native-web";
+import React from 'react';
+import { Text } from 'react-native';
+import { View } from 'react-native-web';
 
 const HomeScreen = () => {
   return (
     <View>
-      <Text> Holaaaaaa estoy en el home y abajo debe aparecer la barra</Text>
+      <Text> Holaaaaaa estoy en el home</Text>
     </View>
-  )
-}
+  );
+};
 
-export default HomeScreen
+export default HomeScreen;
