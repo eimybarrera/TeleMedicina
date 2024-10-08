@@ -10,6 +10,7 @@ import LoginScreen from './src/screens/LoginScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import ProfileScreen from './src/screens/ProfileScreen'; 
 import SplashScreen from './src/screens/SplashScreen';
+import PasswordScreen from './src/screens/PasswordScreen';
 // Stack Navigator para las pantallas de autenticación (Inicio, Registro, Login)
 const AuthStack = createNativeStackNavigator();
 const AuthStackScreen = () => (
@@ -18,6 +19,7 @@ const AuthStackScreen = () => (
     <AuthStack.Screen name="RegisterScreen" component={RegisterScreen} />
     <AuthStack.Screen name="LoginScreen" component={LoginScreen} />
     <AuthStack.Screen name="SplashScreen" component={SplashScreen} options={{ headerShown: false }} />
+    <AuthStack.Screen name="PasswordScreen" component={PasswordScreen} />
   </AuthStack.Navigator>
 );
 

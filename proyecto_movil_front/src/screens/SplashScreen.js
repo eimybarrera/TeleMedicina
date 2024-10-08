@@ -8,7 +8,7 @@ const SplashScreen = () => {
   useEffect(() => {
     setTimeout(() => {
       navigation.replace("StartScreen");  // Redirige a la StartScreen
-    }, 3000);  // 3 segundos antes de redirigir
+    }, 2000);  // 3 segundos antes de redirigir
   }, []);
 
   return (
