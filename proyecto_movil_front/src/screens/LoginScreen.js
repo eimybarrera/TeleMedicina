@@ -20,10 +20,14 @@ const LoginScreen = ({ navigation }) => {
       >
         <Text style={styles.text}> Sign In</Text>
       </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate("PasswordScreen")}>
+        <Text style={{color: "#1C64F2" , marginBottom: 10, marginTop: 15}}> Forgot password?</Text>
+      </TouchableOpacity>
       <Text>Don't have an account yet?</Text>{" "}
       <TouchableOpacity onPress={() => navigation.navigate("RegisterScreen")}>
         <Text> Ir a registrarme </Text>
       </TouchableOpacity>
+
     </View>
   );
 };
