@@ -1,5 +1,6 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import {
   Dimensions,
@@ -15,6 +16,7 @@ import {
 
 const InicioAppMedica = () => {
   // Lista de URLs de imágenes de la galería
+  const navigation = useNavigation();
   const imagenes = [
     {
       id: '1',
@@ -70,6 +72,9 @@ const InicioAppMedica = () => {
         </TouchableOpacity>
         <TouchableOpacity style={estilos.elementoCategoria}>
           <Text>Cardiología</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('All Doctor')} style={estilos.elementoCategoria}>
+          <Text>Ver Todos</Text>
         </TouchableOpacity>
       </View>
 
