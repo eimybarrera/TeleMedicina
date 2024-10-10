@@ -21,7 +21,7 @@ const RegisterScreen = ({ navigation }) => {
       <TextInput placeholder="Your Name" style={styles.imput} />
       <TextInput placeholder="Your Email" style={styles.imput} />
       <TextInput placeholder="Your Password" style={styles.imput} />
-      <TextInput placeholder="Your Emain" style={styles.imput} />
+      <TextInput placeholder="Your Adress" style={styles.imput} />
       <TextInput placeholder="Date of Birth" style={styles.imput} />
       <TextInput placeholder="Gender" style={styles.imput} />
       <TouchableOpacity
@@ -29,6 +29,9 @@ const RegisterScreen = ({ navigation }) => {
         style={styles.touch}
       >
         <Text style={styles.text}> Sign In</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate("LoginScreen")}>
+        <Text style={{ color: "#1C64F2"}}> Ir a LogIn </Text>
       </TouchableOpacity>
     </View>
   )
@@ -40,12 +43,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   titulo: {
-    fontSize: 40,
+    fontSize: 20,
     color: "#34435D",
     fontWeight: "bold",
   },
   subTitulo: {
-    fontSize: 20,
+    fontSize: 10,
     color: "gray",
   },
   imput: {
@@ -76,8 +79,8 @@ const styles = StyleSheet.create({
     height: '100%', 
   },
   imageContainer: {
-    width: 150,  
-    height: 150, 
+    width: 130,  
+    height: 130, 
     marginBottom: 20,
   },
 });
