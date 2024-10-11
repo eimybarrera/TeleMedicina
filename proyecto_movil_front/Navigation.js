@@ -13,6 +13,8 @@ import ProfileScreen from './src/screens/ProfileScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
 import SplashScreen from './src/screens/SplashScreen';
 import StartScreen from './src/screens/StartScreen';
+import FavoritesScreen from './src/screens/FavoritesScreen';
+import AppointmentsScreen from './src/screens/AppointmentScreen';
 
 // Stack Navigator para las pantallas de autenticación (Inicio, Registro, Login)
 const AuthStack = createNativeStackNavigator();
@@ -52,6 +54,24 @@ const TabNavigator = () => (
       component={ProfileScreen}
       options={{
         tabBarLabel: 'Profile',
+        tabBarIcon: ({ color, size }) => <FontAwesome5 name='user' size={size} color={color} />,
+        headerShown: false,
+      }}
+    />
+    <Tab.Screen
+      name="Appointments"
+      component={AppointmentsScreen}
+      options={{
+        tabBarLabel: "Appointments",
+        tabBarIcon: ({ color, size }) => <FontAwesome5 name='user' size={size} color={color} />,
+        headerShown: false,
+      }}
+    />
+    <Tab.Screen
+      name="Favorites"
+      component={FavoritesScreen}
+      options={{
+        tabBarLabel: "Favorites",
         tabBarIcon: ({ color, size }) => <FontAwesome5 name='user' size={size} color={color} />,
         headerShown: false,
       }}
