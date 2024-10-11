@@ -5,7 +5,7 @@ const FavoritesScreen = () => {
 const [favorites, setFavorites] = useState([
     { id: '1', name: 'Dr. María López', specialty: 'Pediatría' },
     { id: '2', name: 'Clínica La Esperanza', specialty: 'Urgencias' },
-    // Cambiarlo por la bd
+    // ejemplo de datos
 ]);
 
 const renderFavorite = ({ item }) => (
