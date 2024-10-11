@@ -52,7 +52,7 @@ const LoginScreen = ({ navigation }) => {
         <Text style={styles.text}> Sign In</Text>
       </TouchableOpacity>
       <Text style={{ marginBottom: 10, marginTop: 10 }}>
-        ----------------------- or -----------------------
+        --------------------or -----------------------
       </Text>
       <TouchableOpacity onPress={() => navigation.navigate("PasswordScreen")}>
         <Text style={{ color: "#1C64F2", marginBottom: 10, marginTop: 15 }}>
