@@ -6,6 +6,7 @@ import React from 'react';
 
 import AllDoctorScreen from './src/screens/AllDoctorScreen';
 import HomeScreen from './src/screens/HomeScreen';
+import InfoDoctorScreen from './src/screens/InfoDoctor';
 import LoginScreen from './src/screens/LoginScreen';
 import PasswordScreen from './src/screens/PasswordScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
@@ -25,6 +26,7 @@ const AuthStackScreen = () => (
     <AuthStack.Screen name='SplashScreen' component={SplashScreen} options={{ headerShown: false }} />
     <AuthStack.Screen name='PasswordScreen' component={PasswordScreen} />
     <AuthStack.Screen name='All Doctor' component={AllDoctorScreen} />
+    <AuthStack.Screen name='Doctor Details' component={InfoDoctorScreen} />
   </AuthStack.Navigator>
 );
 

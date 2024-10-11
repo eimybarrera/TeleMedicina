@@ -7,7 +7,7 @@ const PasswordScreen = ({ navigation }) => {
 
   const handleChangePassword = () => {
     if (newPassword === confirmPassword) {
-      // Agregar la lógica y conectadar la bd
+      // Agregar la lógica y conectar la bd
       alert('Contraseña cambiada exitosamente.');
       navigation.navigate('LoginScreen'); 
     } else {
