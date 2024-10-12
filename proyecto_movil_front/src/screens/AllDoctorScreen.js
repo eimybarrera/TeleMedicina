@@ -1,22 +1,20 @@
-import FontAwesome from '@expo/vector-icons/FontAwesome'; // Para agregar ícono de búsqueda
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'; // Agregar ScrollView
+import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import doctorsData from './database/database';
 
-// Definir las categorías disponibles
 const categories = [
   'All',
   'General',
-  'Cardiologia',
-  'Dentista',
-  'Dermatología',
-  'Neurología',
-  'Pediatría',
-  'Odontología',
-  'Ginecología',
-  'Oftalmología',
-  'Psiquiatría',
+  'Cardiology',
+  'Dentistry',
+  'Dermatology',
+  'Neurology',
+  'Pediatrics',
+  'Gynecology',
+  'Ophthalmology',
+  'Psychiatry',
 ];
 
 const CategoryBar = ({ selectedCategory, onCategoryPress }) => {
@@ -26,10 +24,7 @@ const CategoryBar = ({ selectedCategory, onCategoryPress }) => {
         <TouchableOpacity
           key={category}
           onPress={() => onCategoryPress(category)}
-          style={[
-            styles.categoryButton,
-            selectedCategory === category && styles.selectedCategoryButton, // Cambia el estilo si está seleccionado
-          ]}
+          style={[styles.categoryButton, selectedCategory === category && styles.selectedCategoryButton]}
         >
           <Text style={[styles.categoryText, selectedCategory === category && styles.selectedCategoryText]}>
             {category}
@@ -75,14 +70,20 @@ const AllDoctorScreen = () => {
   //tarjeta de doctor
   const renderDoctorCard = (item) => (
     <TouchableOpacity style={styles.card} key={item.id} onPress={() => navigation.navigate('Doctor Details')}>
-      <Image source={{ uri: item.imageUrl }} style={styles.image} />
-      <View style={styles.cardContent}>
-        <Text style={styles.name}>{item.name}</Text>
-        <Text style={styles.specialty}>{item.specialty}</Text>
-        <Text style={styles.center}>{item.medicalCenter}</Text>
-        <Text style={styles.rating}>
-          Rating: {item.rating} ({item.reviews} reviews)
-        </Text>
+      <View style={styles.cardContainer}>
+        <Image source={{ uri: item.imageUrl }} style={styles.image} />
+        <View style={styles.cardContent}>
+          <Text style={styles.name}>{item.name}</Text>
+          <Text style={styles.specialty}>{item.specialty}</Text>
+          <Text style={styles.center}>{item.medicalCenter}</Text>
+          <View style={styles.ratingContainer}>
+            <Text style={styles.rating}>★ {item.rating}</Text>
+            <Text style={styles.reviews}> | {item.reviews} Reviews</Text>
+          </View>
+        </View>
+        <View style={styles.heartIconContainer}>
+          <FontAwesome name='heart-o' size={20} color='#000' />
+        </View>
       </View>
     </TouchableOpacity>
   );
@@ -132,13 +133,64 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   card: {
-    flexDirection: 'row',
-    backgroundColor: '#fff',
-    borderRadius: 10,
+    backgroundColor: 'white',
+    borderRadius: 15,
     padding: 10,
+    marginVertical: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 5,
     width: '90%',
     alignSelf: 'center',
-    marginBottom: 10,
+  },
+  cardContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  image: {
+    width: 80,
+    height: 80,
+    borderRadius: 10,
+    backgroundColor: '#e0e0e0',
+    marginRight: 15,
+  },
+  cardContent: {
+    flex: 1,
+  },
+  name: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 5,
+  },
+  specialty: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 2,
+  },
+  center: {
+    fontSize: 12,
+    color: '#999',
+    marginBottom: 5,
+  },
+  ratingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  rating: {
+    fontSize: 14,
+    color: '#FFD700',
+  },
+  reviews: {
+    fontSize: 14,
+    color: '#666',
+    marginLeft: 5,
+  },
+  heartIconContainer: {
+    justifyContent: 'flex-end',
+    alignItems: 'center',
   },
   scrollContainer: {
     marginTop: 10,
@@ -159,7 +211,7 @@ const styles = StyleSheet.create({
   },
 
   selectedCategory: {
-    backgroundColor: '#3f51b5', // Color para la categoría seleccionada
+    backgroundColor: '#3f51b5',
   },
 });
 
