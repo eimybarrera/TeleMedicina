@@ -61,9 +61,9 @@ const LoginScreen = ({ navigation }) => {
         </Text>
       </TouchableOpacity>
       <View style={{ flexDirection: "row" }}>
-        <Text>Don't have an account yet?</Text>{" "}
+        <Text>Don't have an account yet?</Text>
         <TouchableOpacity onPress={() => navigation.navigate("RegisterScreen")}>
-          <Text style={{ color: "#1C64F2" }}> Ir a registrarme </Text>
+          <Text style={{ color: "#1C64F2" }}> Create Account </Text>
         </TouchableOpacity>
       </View>
     </View>
