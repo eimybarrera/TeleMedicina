@@ -69,7 +69,14 @@ const AllDoctorScreen = () => {
 
   //tarjeta de doctor
   const renderDoctorCard = (item) => (
-    <TouchableOpacity style={styles.card} key={item.id} onPress={() => navigation.navigate('Doctor Details')}>
+    <TouchableOpacity
+      style={styles.card}
+      key={item.id}
+      onPress={() => {
+        console.log('Doctor ID:', item.id);
+        navigation.navigate('Doctor Details', { doctorId: item.id });
+      }}
+    >
       <View style={styles.cardContainer}>
         <Image source={{ uri: item.imageUrl }} style={styles.image} />
         <View style={styles.cardContent}>

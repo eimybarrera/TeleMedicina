@@ -10,7 +10,7 @@ const doctorsData = [
     reviews: 320,
     aboutMe: 'Specialist in cardiology with over 15 years of experience helping patients with cardiovascular problems.',
     workHours: 'Monday to Friday: 9:00 AM - 5:00 PM',
-    imageUrl: 'C:Sexto SemestreProgramacion movilTeleMedicinaproyecto_movil_frontassetsdocNaranja.png',
+    imageUrl: require('../../../assets/docNaranja.png'),
   },
   {
     id: '2',
