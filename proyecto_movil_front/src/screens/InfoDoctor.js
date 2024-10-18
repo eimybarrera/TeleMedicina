@@ -84,7 +84,7 @@ const InfoDoctorScreen = ({ route }) => {
             <Image source={{ uri: doctor.imageUrl }} style={styles.imageReview} />
             <View style={styles.namecard}>
               <Text style={styles.text}>{review.patient.name}</Text>
-              <Text style={styles.text}>{review.patient.rating}</Text>
+              <Text style={styles.text}>★ {review.patient.rating}</Text>
             </View>
           </View>
           <Text style={styles.text1}>{review.patient.comment}</Text>
