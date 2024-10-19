@@ -20,6 +20,14 @@ import StartScreen from './src/screens/StartScreen.js';
 import espes from './src/screens/espes.js';
 
 const AuthStack = createNativeStackNavigator();
+const AuthStackScreen = () => (
+  <AuthStack.Navigator initialRouteName='SplashScreen'>
+    <AuthStack.Screen name='StartScreen' component={StartScreen} />
+    <AuthStack.Screen name='RegisterScreen' component={RegisterScreen} />
+    <AuthStack.Screen name='LoginScreen' component={LoginScreen} />
+    <AuthStack.Screen name='SplashScreen' component={SplashScreen} options={{ headerShown: false }} />
+    <AuthStack.Screen name='PasswordScreen' component={PasswordScreen} />
+  </AuthStack.Navigator>
 const AuthStackScreen = ({ setIsAuthenticated }) => (
   <SafeAreaView style={{ flex: 1 }}>
     <AuthStack.Navigator initialRouteName='SplashScreen'>
@@ -39,7 +47,58 @@ const AuthStackScreen = ({ setIsAuthenticated }) => (
   </SafeAreaView>
 );
 
+const HomeStack= createNativeStackNavigator();
+function HomeStackScreen(){
+  return(
+    <HomeStack.Navigator initialRouteName='Home'>
+      <AuthStack.Screen name='Home' component={HomeScreen}  options={{ headerShown: false }}/>
+      <AuthStack.Screen name='All Doctor' component={AllDoctorScreen}  />
+      <AuthStack.Screen name='Doctor Details' component={InfoDoctorScreen} />
+      <AuthStack.Screen name='Book Appointment' component={BookAppointmentScreen} />
+      <AuthStack.Screen name='Favorites' component={FavoritesScreen} />
+    </HomeStack.Navigator>
+  )
+}
+// Bottom Tab Navigator para las pantallas después de iniciar sesión (Home, Profile)
 const Tab = createBottomTabNavigator();
+const TabNavigator = () => (
+  <Tab.Navigator
+    initialRouteName='Home'
+    screenOptions={{
+      tabBarActiveTintColor: 'green',
+      tabBarInactiveTintColor: 'red',
+    }}
+  >
+    <Tab.Screen
+      name='Home'
+      component={HomeStackScreen}
+      options={{
+        tabBarLabel: 'Home',
+        tabBarIcon: ({ color, size }) => <FontAwesome5 name='home' size={size} color={color} />,
+        headerShown: false,
+      }}
+    />
+    <Tab.Screen
+      name='Profile'
+      component={ProfileScreen}
+      options={{
+        tabBarLabel: 'Profile',
+        tabBarIcon: ({ color, size }) => <FontAwesome5 name='user' size={size} color={color} />,
+        headerShown: false,
+      }}
+    />
+    <Tab.Screen
+      name='Appointments'
+      component={AppointmentsScreen}
+      options={{
+        tabBarLabel: 'Appointments',
+        tabBarIcon: ({ color, size }) => <FontAwesome5 name='user' size={size} color={color} />,
+        headerShown: false,
+      }}
+    />
+    
+  </Tab.Navigator>
+);
 
 const TabNavigator = () => {
   const tabs = [
