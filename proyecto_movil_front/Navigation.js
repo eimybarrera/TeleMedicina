@@ -26,12 +26,20 @@ const AuthStackScreen = () => (
     <AuthStack.Screen name='LoginScreen' component={LoginScreen} />
     <AuthStack.Screen name='SplashScreen' component={SplashScreen} options={{ headerShown: false }} />
     <AuthStack.Screen name='PasswordScreen' component={PasswordScreen} />
-    <AuthStack.Screen name='All Doctor' component={AllDoctorScreen} />
-    <AuthStack.Screen name='Doctor Details' component={InfoDoctorScreen} />
-    <AuthStack.Screen name='Book Appointment' component={BookAppointmentScreen} />
   </AuthStack.Navigator>
 );
 
+const HomeStack= createNativeStackNavigator();
+function HomeStackScreen(){
+  return(
+    <HomeStack.Navigator initialRouteName='Home'>
+      <AuthStack.Screen name='Home' component={HomeScreen}  options={{ headerShown: false }}/>
+      <AuthStack.Screen name='All Doctor' component={AllDoctorScreen}  />
+      <AuthStack.Screen name='Doctor Details' component={InfoDoctorScreen} />
+      <AuthStack.Screen name='Book Appointment' component={BookAppointmentScreen} />
+    </HomeStack.Navigator>
+  )
+}
 // Bottom Tab Navigator para las pantallas después de iniciar sesión (Home, Profile)
 const Tab = createBottomTabNavigator();
 const TabNavigator = () => (
@@ -44,7 +52,7 @@ const TabNavigator = () => (
   >
     <Tab.Screen
       name='Home'
-      component={HomeScreen}
+      component={HomeStackScreen}
       options={{
         tabBarLabel: 'Home',
         tabBarIcon: ({ color, size }) => <FontAwesome5 name='home' size={size} color={color} />,
