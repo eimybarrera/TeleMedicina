@@ -20,14 +20,6 @@ import StartScreen from './src/screens/StartScreen.js';
 import espes from './src/screens/espes.js';
 
 const AuthStack = createNativeStackNavigator();
-const AuthStackScreen = () => (
-  <AuthStack.Navigator initialRouteName='SplashScreen'>
-    <AuthStack.Screen name='StartScreen' component={StartScreen} />
-    <AuthStack.Screen name='RegisterScreen' component={RegisterScreen} />
-    <AuthStack.Screen name='LoginScreen' component={LoginScreen} />
-    <AuthStack.Screen name='SplashScreen' component={SplashScreen} options={{ headerShown: false }} />
-    <AuthStack.Screen name='PasswordScreen' component={PasswordScreen} />
-  </AuthStack.Navigator>
 const AuthStackScreen = ({ setIsAuthenticated }) => (
   <SafeAreaView style={{ flex: 1 }}>
     <AuthStack.Navigator initialRouteName='SplashScreen'>
@@ -35,7 +27,7 @@ const AuthStackScreen = ({ setIsAuthenticated }) => (
       <AuthStack.Screen name='RegisterScreen' component={RegisterScreen} />
       <AuthStack.Screen
         name='LoginScreen'
-        component={(props) => <LoginScreen {...props} setIsAuthenticated={setIsAuthenticated} />} // Pasamos el prop
+        component={(props) => <LoginScreen {...props} setIsAuthenticated={setIsAuthenticated} />}
       />
       <AuthStack.Screen name='SplashScreen' component={SplashScreen} options={{ headerShown: false }} />
       <AuthStack.Screen name='PasswordScreen' component={PasswordScreen} />
@@ -47,62 +39,24 @@ const AuthStackScreen = ({ setIsAuthenticated }) => (
   </SafeAreaView>
 );
 
-const HomeStack= createNativeStackNavigator();
-function HomeStackScreen(){
-  return(
+const HomeStack = createNativeStackNavigator();
+function HomeStackScreen() {
+  return (
     <HomeStack.Navigator initialRouteName='Home'>
-      <AuthStack.Screen name='Home' component={HomeScreen}  options={{ headerShown: false }}/>
-      <AuthStack.Screen name='All Doctor' component={AllDoctorScreen}  />
-      <AuthStack.Screen name='Doctor Details' component={InfoDoctorScreen} />
-      <AuthStack.Screen name='Book Appointment' component={BookAppointmentScreen} />
-      <AuthStack.Screen name='Favorites' component={FavoritesScreen} />
+      <HomeStack.Screen name='Home' component={HomeScreen} options={{ headerShown: false }} />
+      <HomeStack.Screen name='All Doctor' component={AllDoctorScreen} />
+      <HomeStack.Screen name='Doctor Details' component={InfoDoctorScreen} />
+      <HomeStack.Screen name='Book Appointment' component={BookAppointmentScreen} />
+      <HomeStack.Screen name='Favorites' component={FavoritesScreen} />
     </HomeStack.Navigator>
-  )
+  );
 }
+
 // Bottom Tab Navigator para las pantallas después de iniciar sesión (Home, Profile)
 const Tab = createBottomTabNavigator();
-const TabNavigator = () => (
-  <Tab.Navigator
-    initialRouteName='Home'
-    screenOptions={{
-      tabBarActiveTintColor: 'green',
-      tabBarInactiveTintColor: 'red',
-    }}
-  >
-    <Tab.Screen
-      name='Home'
-      component={HomeStackScreen}
-      options={{
-        tabBarLabel: 'Home',
-        tabBarIcon: ({ color, size }) => <FontAwesome5 name='home' size={size} color={color} />,
-        headerShown: false,
-      }}
-    />
-    <Tab.Screen
-      name='Profile'
-      component={ProfileScreen}
-      options={{
-        tabBarLabel: 'Profile',
-        tabBarIcon: ({ color, size }) => <FontAwesome5 name='user' size={size} color={color} />,
-        headerShown: false,
-      }}
-    />
-    <Tab.Screen
-      name='Appointments'
-      component={AppointmentsScreen}
-      options={{
-        tabBarLabel: 'Appointments',
-        tabBarIcon: ({ color, size }) => <FontAwesome5 name='user' size={size} color={color} />,
-        headerShown: false,
-      }}
-    />
-    
-  </Tab.Navigator>
-);
-
 const TabNavigator = () => {
   const tabs = [
-    { id: 1, name: 'Home', component: HomeScreen, icon: 'home', color: '#877EA1' }, // Rosa suave
+    { id: 1, name: 'Home', component: HomeStackScreen, icon: 'home', color: '#877EA1' }, // Rosa suave
     { id: 2, name: 'Appointments', component: AppointmentsScreen, icon: 'calendar', color: '#B77B7E' }, // Naranja suave
     { id: 3, name: 'Favorites', component: FavoritesScreen, icon: 'star', color: '#C6CACC' }, // Amarillo suave
     { id: 4, name: 'Profile', component: ProfileScreen, icon: 'account-circle', color: '#81C995' }, // Verde suave
@@ -133,10 +87,16 @@ const TabNavigator = () => {
 };
 
 export default function App() {
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+
   return (
     <NavigationContainer>
       <AuthStack.Navigator>
-        <AuthStack.Screen name='AuthStack' component={AuthStackScreen} options={{ headerShown: false }} />
+        <AuthStack.Screen
+          name='AuthStack'
+          component={() => <AuthStackScreen setIsAuthenticated={setIsAuthenticated} />}
+          options={{ headerShown: false }}
+        />
         <AuthStack.Screen name='Main' component={TabNavigator} options={{ headerShown: false }} />
       </AuthStack.Navigator>
     </NavigationContainer>

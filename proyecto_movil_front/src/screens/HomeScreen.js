@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
   },
   bannerImage: {
     width: 300,
-    height: 150,
+    height: 250,
     borderRadius: 10,
   },
   categories: {
