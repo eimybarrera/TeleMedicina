@@ -1,7 +1,32 @@
-import React from "react";
-import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
+import React from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList } from 'react-native';
+
+
+const options = [
+  { id: '1', title: 'Edit Profile' },
+  { id: '2', title: 'Favorite' },
+  { id: '4', title: 'Settings' },
+  { id: '5', title: 'Help and Support' },
+  { id: '6', title: 'Terms and Conditions' },
+  { id: '7', title: 'Log Out' },
+];
 
 const Profile = ({ navigation }) => {
+  const handleOptionPress = (item) => {
+    if (item.id === '7') {
+      navigation.navigate('StartScreen');
+    } else if (item.id === '2') {
+      navigation.navigate('Favorites');
+    }
+  };
+
+  const renderItem = ({ item }) => (
+    <TouchableOpacity style={styles.option} onPress={() => handleOptionPress(item)}>
+      <Text style={styles.optionText}>{item.title}</Text>
+      <Text style={styles.arrow}>➔</Text>
+    </TouchableOpacity>
+  );
+
   return (
     <View style={styles.container}>
       <Text style={styles.titulo}> Acá va la foto </Text>

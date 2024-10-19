@@ -26,9 +26,9 @@ return (
         keyExtractor={(item) => item.id}
         style={styles.list}
     />
-    <TouchableOpacity style={styles.button}>
+    {/* <TouchableOpacity style={styles.button}>
         <Text style={styles.buttonText}>Agendar Nueva Cita</Text>
-    </TouchableOpacity>
+    </TouchableOpacity> */}
     </View>
 );
 };
