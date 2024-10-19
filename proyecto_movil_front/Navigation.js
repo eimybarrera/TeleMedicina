@@ -7,6 +7,7 @@ import TabButton from './components/TabButton.js';
 
 import AllDoctorScreen from './src/screens/AllDoctorScreen.js';
 import AppointmentsScreen from './src/screens/AppointmentScreen.js';
+import BookAppointmentScreen from './src/screens/BookAppointmentScreen.js';
 import FavoritesScreen from './src/screens/FavoritesScreen.js';
 import HomeScreen from './src/screens/HomeScreen.js';
 import InfoDoctorScreen from './src/screens/InfoDoctor.js';
@@ -31,6 +32,7 @@ const AuthStackScreen = ({ setIsAuthenticated }) => (
       <AuthStack.Screen name='PasswordScreen' component={PasswordScreen} />
       <AuthStack.Screen name='All Doctor' component={AllDoctorScreen} />
       <AuthStack.Screen name='Doctor Details' component={InfoDoctorScreen} />
+      <AuthStack.Screen name='Book Appointment' component={BookAppointmentScreen} />
     </AuthStack.Navigator>
   </SafeAreaView>
 );
