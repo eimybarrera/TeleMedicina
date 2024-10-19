@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList } from 'react-native';
 
+
 const options = [
   { id: '1', title: 'Edit Profile' },
   { id: '2', title: 'Favorite' },
@@ -14,6 +15,8 @@ const Profile = ({ navigation }) => {
   const handleOptionPress = (item) => {
     if (item.id === '7') {
       navigation.navigate('StartScreen');
+    } else if (item.id === '2') {
+      navigation.navigate('Favorites');
     }
   };
 

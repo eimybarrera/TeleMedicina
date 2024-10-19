@@ -37,6 +37,7 @@ function HomeStackScreen(){
       <AuthStack.Screen name='All Doctor' component={AllDoctorScreen}  />
       <AuthStack.Screen name='Doctor Details' component={InfoDoctorScreen} />
       <AuthStack.Screen name='Book Appointment' component={BookAppointmentScreen} />
+      <AuthStack.Screen name='Favorites' component={FavoritesScreen} />
     </HomeStack.Navigator>
   )
 }
@@ -77,15 +78,7 @@ const TabNavigator = () => (
         headerShown: false,
       }}
     />
-    <Tab.Screen
-      name='Favorites'
-      component={FavoritesScreen}
-      options={{
-        tabBarLabel: 'Favorites',
-        tabBarIcon: ({ color, size }) => <FontAwesome5 name='user' size={size} color={color} />,
-        headerShown: false,
-      }}
-    />
+    
   </Tab.Navigator>
 );
 
