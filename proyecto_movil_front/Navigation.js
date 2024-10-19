@@ -17,6 +17,7 @@ import ProfileScreen from './src/screens/ProfileScreen.js';
 import RegisterScreen from './src/screens/RegisterScreen.js';
 import SplashScreen from './src/screens/SplashScreen.js';
 import StartScreen from './src/screens/StartScreen.js';
+import espes from './src/screens/espes.js';
 
 const AuthStack = createNativeStackNavigator();
 const AuthStackScreen = ({ setIsAuthenticated }) => (
@@ -33,6 +34,7 @@ const AuthStackScreen = ({ setIsAuthenticated }) => (
       <AuthStack.Screen name='All Doctor' component={AllDoctorScreen} />
       <AuthStack.Screen name='Doctor Details' component={InfoDoctorScreen} />
       <AuthStack.Screen name='Book Appointment' component={BookAppointmentScreen} />
+      <AuthStack.Screen name='espes' component={espes} />
     </AuthStack.Navigator>
   </SafeAreaView>
 );

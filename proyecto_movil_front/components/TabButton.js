@@ -65,8 +65,7 @@ export default ({ item, accessibilityState, onPress }) => {
             scaleStyles,
           ]}
         />
-        <Material name={item.icon} color={accessibilityState.selected ? '#fff' : item.color} size={22} />{' '}
-        {/* Color dinámico */}
+        <Material name={item.icon} color={accessibilityState.selected ? '#fff' : item.color} size={35} />
       </Animated.View>
       <Animated.Text style={[styles.title, { opacity: scale }]}>{item.name}</Animated.Text>
     </TouchableOpacity>
@@ -92,7 +91,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   title: {
-    fontSize: 10,
+    fontSize: 15,
     fontWeight: 'bold',
     textAlign: 'center',
     color: '#0792b3',
