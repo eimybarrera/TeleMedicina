@@ -42,7 +42,7 @@ const TabNavigator = () => {
     { id: 1, name: 'Home', component: HomeScreen, icon: 'home', color: '#877EA1' }, // Rosa suave
     { id: 2, name: 'Appointments', component: AppointmentsScreen, icon: 'calendar', color: '#B77B7E' }, // Naranja suave
     { id: 3, name: 'Favorites', component: FavoritesScreen, icon: 'star', color: '#C6CACC' }, // Amarillo suave
-    { id: 4, name: 'Profile', component: ProfileScreen, icon: 'account-circle', color: '#B77B7E' }, // Verde suave
+    { id: 4, name: 'Profile', component: ProfileScreen, icon: 'account-circle', color: '#81C995' }, // Verde suave
   ];
 
   return (
