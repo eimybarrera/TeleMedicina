@@ -4,7 +4,6 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList } from 'react
 const options = [
   { id: '1', title: 'Edit Profile' },
   { id: '2', title: 'Favorite' },
-  { id: '3', title: 'Notifications' },
   { id: '4', title: 'Settings' },
   { id: '5', title: 'Help and Support' },
   { id: '6', title: 'Terms and Conditions' },
