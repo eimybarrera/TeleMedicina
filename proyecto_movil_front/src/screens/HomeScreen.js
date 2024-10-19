@@ -1,148 +1,160 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
-import {
-  Dimensions,
-  FlatList,
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import React, { useState } from 'react';
+import { FlatList, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 const InicioAppMedica = () => {
-  // Lista de URLs de imágenes de la galería
   const navigation = useNavigation();
-  const imagenes = [
-    {
-      id: '1',
-      uri: 'https://images.all-free-download.com/images/thumbjpg/banner_donate_blood_and_save_lives_template_elegant_doctor_sketch_modern_realistic_design_6925045.jpg',
-    },
-    {
-      id: '3',
-      uri: 'https://previews.123rf.com/images/watcartoon/watcartoon1711/watcartoon171100033/90465235-presentaci%C3%B3n-del-doctor-para-banner-plantilla-de-dise%C3%B1o-cubierta-anuncio-cartel.jpg',
-    },
+
+  // State to store the selected category
+  const [selectedCategory, setSelectedCategory] = useState('All');
+
+  const images = [
+    { id: '1', uri: require('../../assets/WhatsApp Image 2024-10-18 at 9.26.33 PM.jpeg') },
+    { id: '2', uri: require('../../assets/WhatsApp Image 2024-10-18 at 9.27.17 PM.jpeg') },
+    { id: '3', uri: require('../../assets/WhatsApp Image 2024-10-18 at 9.27.34 PM.jpeg') },
+    { id: '4', uri: require('../../assets/WhatsApp Image 2024-10-18 at 9.28.22 PM.jpeg') },
+    { id: '5', uri: require('../../assets/WhatsApp Image 2024-10-18 at 9.28.35 PM.jpeg') },
   ];
 
-  const renderItem = ({ item }) => (
-    <View style={estilos.itemImagen}>
-      <Image source={{ uri: item.uri }} style={estilos.imagenDoctor} />
-    </View>
-  );
+  // Function to handle category selection
+  const handleCategoryPress = (category) => {
+    setSelectedCategory(category);
+    navigation.navigate('espes', { category });
+  };
 
   return (
-    <ScrollView style={estilos.contenedor}>
-      <View style={estilos.encabezado}>
-        <Text style={estilos.titulo}>Ubicación</Text>
-        <View style={estilos.ubicacionContenedor}>
-          <FontAwesome5 name='map-marker-alt' size={20} color='black' style={estilos.iconoUbicacion} />
-          <Text style={estilos.ubicacion}>Medellín, COL</Text>
+    <ScrollView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.title}>Location</Text>
+        <View style={styles.locationContainer}>
+          <FontAwesome5 name='map-marker-alt' size={20} color='black' style={styles.locationIcon} />
+          <Text style={styles.location}>Medellín, COL</Text>
         </View>
-        <View style={estilos.barraBusquedaContenedor}>
+        <View style={styles.searchBarContainer}>
           <TextInput
-            style={estilos.barraBusqueda}
-            placeholder='Buscar doctor...'
+            style={styles.searchBar}
+            placeholder='Search doctor...'
             placeholderTextColor='rgba(0, 0, 0, 0.6)'
           />
-          <FontAwesome name='search' size={20} color='black' style={estilos.iconoBusqueda} />
+          <FontAwesome name='search' size={20} color='black' style={styles.searchIcon} />
         </View>
       </View>
 
-      {/* Banner con las imágenes usando FlatList */}
-      <View style={estilos.banner}>
+      {/* Banner with images using FlatList */}
+      <View style={styles.banner}>
         <FlatList
-          data={imagenes}
-          renderItem={renderItem}
+          data={images}
+          renderItem={({ item }) => <Image source={item.uri} style={styles.bannerImage} />}
           keyExtractor={(item) => item.id}
           horizontal
           pagingEnabled
           showsHorizontalScrollIndicator={false}
-          style={estilos.galeriaContenedor}
         />
       </View>
 
-      {/* Categorías */}
-      <View style={estilos.categorias}>
-        <TouchableOpacity style={estilos.elementoCategoria}>
-          <Text>Odontología</Text>
+      {/* Categories with icons */}
+      <View style={styles.categories}>
+        <TouchableOpacity style={styles.categoryItem} onPress={() => handleCategoryPress('General')}>
+          <FontAwesome name='heartbeat' size={40} color='#2A9D8F' />
+          <Text style={styles.categoryText}>General</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={estilos.elementoCategoria}>
-          <Text>Cardiología</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('All Doctor')} style={estilos.elementoCategoria}>
-          <Text>Ver Todos</Text>
-        </TouchableOpacity>
-      </View>
 
-      {/* Centros Médicos Cercanos */}
-      <View style={estilos.centrosMedicos}>
-        <Text>Centros Médicos Cercanos</Text>
-        <ScrollView horizontal>
-          <View style={estilos.elementoCentro}>
-            <Image source={{ uri: 'https://via.placeholder.com/100x100' }} style={estilos.imagenCentro} />
-            <Text>Clínica Salud Amanecer</Text>
-          </View>
-          <View style={estilos.elementoCentro}>
-            <Image source={{ uri: 'https://via.placeholder.com/100x100' }} style={estilos.imagenCentro} />
-            <Text>Cardiología Dorada</Text>
-          </View>
-        </ScrollView>
+        <TouchableOpacity style={styles.categoryItem} onPress={() => handleCategoryPress('Cardiology')}>
+          <FontAwesome name='heart' size={40} color='#E76F51' />
+          <Text style={styles.categoryText}>Cardiology</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.categoryItem} onPress={() => handleCategoryPress('Dentistry')}>
+          <FontAwesome5 name='tooth' size={40} color='#2A9D8F' />
+          <Text style={styles.categoryText}>Dentist</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.categoryItem} onPress={() => handleCategoryPress('Dermatology')}>
+          <FontAwesome name='sun-o' size={40} color='#E9C46A' />
+          <Text style={styles.categoryText}>Dermatology</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.categoryItem} onPress={() => handleCategoryPress('Neurology')}>
+          <FontAwesome name='brain' size={40} color='#F4A261' />
+          <Text style={styles.categoryText}>Neurology</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.categoryItem} onPress={() => handleCategoryPress('Pediatrics')}>
+          <FontAwesome name='child' size={40} color='#6C5B7B' />
+          <Text style={styles.categoryText}>Pediatrics</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.categoryItem} onPress={() => handleCategoryPress('Gynecology')}>
+          <FontAwesome name='female' size={40} color='#F7B32B' />
+          <Text style={styles.categoryText}>Gynecology</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.categoryItem} onPress={() => handleCategoryPress('Ophthalmology')}>
+          <FontAwesome name='eye' size={40} color='#2A9D8F' />
+          <Text style={styles.categoryText}>Ophthalmology</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.categoryItem} onPress={() => handleCategoryPress('Psychiatry')}>
+          <FontAwesome name='medkit' size={40} color='#F4A261' />
+          <Text style={styles.categoryText}>Psychiatry</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => navigation.navigate('All Doctor')} style={styles.viewAllContainer}>
+          <Text style={styles.viewAllText}>See all</Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );
 };
 
-const { width } = Dimensions.get('window');
-
-const estilos = StyleSheet.create({
-  contenedor: {
+const styles = StyleSheet.create({
+  container: {
     flex: 1,
     padding: 10,
+    paddingBottom: 80,
     backgroundColor: '#fff',
   },
-  encabezado: {
+  header: {
     paddingTop: 10,
     alignItems: 'flex-start',
   },
-  titulo: {
+  title: {
     fontSize: 17,
     color: 'rgba(0, 0, 0, 0.6)',
     fontWeight: 'normal',
     marginHorizontal: 10,
   },
-  ubicacionContenedor: {
+  locationContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
   },
-  iconoUbicacion: {
+  locationIcon: {
     width: 20,
     height: 20,
     marginRight: 5,
   },
-  ubicacion: {
+  location: {
     fontSize: 18,
     fontWeight: 'bold',
   },
-  barraBusquedaContenedor: {
+  searchBarContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
     borderBottomWidth: 1,
     borderBottomColor: 'rgba(0, 0, 0, 0.3)',
   },
-  barraBusqueda: {
+  searchBar: {
     backgroundColor: '#f0f0f0',
     borderRadius: 10,
     padding: 8,
     flex: 1,
     fontSize: 16,
   },
-  iconoBusqueda: {
+  searchIcon: {
     position: 'absolute',
     right: 10,
     top: '50%',
@@ -150,49 +162,41 @@ const estilos = StyleSheet.create({
   },
   banner: {
     marginTop: 20,
-    backgroundColor: '#f0f0f0', // Fondo del banner
+    backgroundColor: '#f0f0f0',
     padding: 0,
     borderRadius: 10,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 200, // Limita la altura del banner
+    overflow: 'hidden',
   },
-  galeriaContenedor: {
-    flexDirection: 'row',
-    width: '100%', // Asegura que ocupe todo el ancho
-  },
-  itemImagen: {
-    width: width, // La imagen ocupa todo el ancho de la pantalla
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  imagenDoctor: {
-    width: '100%', // La imagen ocupa todo el ancho del banner
-    height: 200, // Ajusta la altura para que ocupe el espacio completo del banner
-    resizeMode: 'cover', // Hace que la imagen se ajuste correctamente al tamaño del contenedor
-  },
-  categorias: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: 20,
-  },
-  elementoCategoria: {
-    backgroundColor: '#e6f5f9',
-    padding: 15,
+  bannerImage: {
+    width: 300,
+    height: 250,
     borderRadius: 10,
   },
-  centrosMedicos: {
-    marginTop: 20,
+  categories: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginVertical: 20,
   },
-  elementoCentro: {
-    marginRight: 10,
+  categoryItem: {
+    width: '30%',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  categoryText: {
+    fontSize: 12,
+    marginTop: 5,
+    color: 'rgba(0, 0, 0, 0.6)',
+  },
+  viewAllContainer: {
+    width: '100%',
+    marginTop: 10,
     alignItems: 'center',
   },
-  imagenCentro: {
-    width: 100,
-    height: 100,
-    borderRadius: 10,
+  viewAllText: {
+    fontSize: 16,
+    color: '#2A9D8F',
+    fontWeight: 'bold',
   },
 });
 
