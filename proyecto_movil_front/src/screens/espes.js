@@ -3,12 +3,14 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import doctorsData from './database/database';
+import { useFavorites } from './FavoritesContext';
 
 const Espes = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const { category } = route.params;
   const [filteredDoctors, setFilteredDoctors] = useState([]);
+  const { favorites, toggleFavorite } = useFavorites(); //para comunicar con los favs
 
   // Filtra los doctores en función de la categoría recibida
   useEffect(() => {
@@ -22,7 +24,10 @@ const Espes = () => {
     navigation.navigate('Doctor Details', { doctorId: doctorId });
   };
 
-  const renderDoctorCard = (item) => (
+  const renderDoctorCard = (item) => {
+    const isFavorite = favorites.some((fav) => fav.id === item.id); //ver si esta en favs
+
+  return(
     <TouchableOpacity
       style={styles.card}
       key={item.id}
@@ -39,12 +44,22 @@ const Espes = () => {
             <Text style={styles.reviews}> | {item.reviews} Reviews</Text>
           </View>
         </View>
-        <View style={styles.heartIconContainer}>
-          <FontAwesome name='heart-o' size={20} color='#000' />
+
+        {/* Ícono de favorito */}
+        <TouchableOpacity
+            style={styles.heartIconContainer}
+            onPress={() => toggleFavorite(item)} // Marca o desmarca como favorito
+          >
+            <FontAwesome
+              name={isFavorite ? 'heart' : 'heart-o'} // Ícono lleno si es favorito
+              size={20}
+              color={isFavorite ? 'red' : '#000'}
+            />
+          </TouchableOpacity>
         </View>
-      </View>
-    </TouchableOpacity>
-  );
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <View style={styles.container}>

@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 import { SafeAreaView, StyleSheet } from 'react-native';
 import TabButton from './components/TabButton.js';
+import { FavoritesProvider } from './src/screens/FavoritesContext.js';
 
 import AllDoctorScreen from './src/screens/AllDoctorScreen.js';
 import AppointmentsScreen from './src/screens/AppointmentScreen.js';
@@ -20,6 +21,7 @@ import StartScreen from './src/screens/StartScreen.js';
 import espes from './src/screens/espes.js';
 
 const AuthStack = createNativeStackNavigator();
+
 const AuthStackScreen = ({ setIsAuthenticated }) => (
   <SafeAreaView style={{ flex: 1 }}>
     <AuthStack.Navigator initialRouteName='SplashScreen'>
@@ -34,7 +36,6 @@ const AuthStackScreen = ({ setIsAuthenticated }) => (
       <AuthStack.Screen name='All Doctor' component={AllDoctorScreen} />
       <AuthStack.Screen name='Doctor Details' component={InfoDoctorScreen} />
       <AuthStack.Screen name='Book Appointment' component={BookAppointmentScreen} />
-      <AuthStack.Screen name='espes' component={espes} />
     </AuthStack.Navigator>
   </SafeAreaView>
 );
@@ -48,6 +49,7 @@ function HomeStackScreen() {
       <HomeStack.Screen name='Doctor Details' component={InfoDoctorScreen} />
       <HomeStack.Screen name='Book Appointment' component={BookAppointmentScreen} />
       <HomeStack.Screen name='Favorites' component={FavoritesScreen} />
+      <HomeStack.Screen name='espes' component={espes} />
     </HomeStack.Navigator>
   );
 }
@@ -90,16 +92,18 @@ export default function App() {
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
 
   return (
-    <NavigationContainer>
-      <AuthStack.Navigator>
-        <AuthStack.Screen
-          name='AuthStack'
-          component={() => <AuthStackScreen setIsAuthenticated={setIsAuthenticated} />}
-          options={{ headerShown: false }}
-        />
-        <AuthStack.Screen name='Main' component={TabNavigator} options={{ headerShown: false }} />
-      </AuthStack.Navigator>
-    </NavigationContainer>
+    <FavoritesProvider> {/* <--- Aquí envuelves la navegación con el Provider */}
+      <NavigationContainer>
+        <AuthStack.Navigator>
+          <AuthStack.Screen
+            name='AuthStack'
+            component={() => <AuthStackScreen setIsAuthenticated={setIsAuthenticated} />}
+            options={{ headerShown: false }}
+          />
+          <AuthStack.Screen name='Main' component={TabNavigator} options={{ headerShown: false }} />
+        </AuthStack.Navigator>
+      </NavigationContainer>
+    </FavoritesProvider>
   );
 }
 
