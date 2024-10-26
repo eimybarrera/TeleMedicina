@@ -1,7 +1,7 @@
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Image, StyleSheet, Text, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-web';
 import doctorsData from './database/database';
 import patientReviews from './database/reviews';
@@ -32,14 +32,7 @@ const CircleInfo = ({ doctor }) => (
 );
 
 const renderDoctorCard = (doctor) => (
-  <View
-    style={styles.card}
-    key={doctor.id}
-    onPress={() => {
-      console.log('Doctor ID:', doctor.id);
-      navigation.navigate('Doctor Details', { doctorId: doctor.id }); // Pasando doctorId en la navegación
-    }}
-  >
+  <View style={styles.card} key={doctor.id}>
     <View style={styles.cardContainer}>
       <Image source={{ uri: doctor.imageUrl }} style={styles.image} />
       <View style={styles.cardContent}>
@@ -55,7 +48,7 @@ const InfoDoctorScreen = ({ route }) => {
   const navigation = useNavigation();
   const { doctorId } = route.params;
   const doctor = doctorsData.find((doc) => doc.id === doctorId);
-  const review = patientReviews.find((doc) => doc.doctorId == doctorId);
+  const review = patientReviews.find((doc) => doc.doctorId === doctorId);
 
   if (!doctor) {
     return (
@@ -65,34 +58,63 @@ const InfoDoctorScreen = ({ route }) => {
     );
   }
 
+  // Datos para el FlatList
+  const data = [
+    {
+      key: 'aboutMe',
+      content: (
+        <View style={styles.box2}>
+          <Text style={styles.title}>About me</Text>
+          <Text style={styles.text1}>{doctor.aboutMe}</Text>
+        </View>
+      ),
+    },
+    {
+      key: 'workingTime',
+      content: (
+        <View style={styles.box2}>
+          <Text style={styles.title}>Working Time</Text>
+          <Text style={styles.text1}>{doctor.workHours}</Text>
+        </View>
+      ),
+    },
+    {
+      key: 'reviews',
+      content: (
+        <View style={styles.box2}>
+          <Text style={styles.title}>Reviews</Text>
+          <View>
+            <View style={styles.cardReview}>
+              <Image source={{ uri: doctor.imageUrl }} style={styles.imageReview} />
+              <View style={styles.namecard}>
+                <Text style={styles.text}>{review.patient.name}</Text>
+                <Text style={styles.text}>★ {review.patient.rating}</Text>
+              </View>
+            </View>
+            <Text style={styles.text1}>{review.patient.comment}</Text>
+          </View>
+        </View>
+      ),
+    },
+  ];
+
+  // Función para renderizar cada ítem del FlatList
+  const renderItem = ({ item }) => <View style={{ marginVertical: 10 }}>{item.content}</View>;
+
   return (
     <View style={styles.container}>
-      {renderDoctorCard(doctor)} {/* Llamar a renderDoctorCard para mostrar la tarjeta del doctor */}
-      <CircleInfo doctor={doctor} />
-      <View style={styles.box2}>
-        <Text style={styles.title}>About me</Text>
-        <Text style={styles.text1}>{doctor.aboutMe}</Text>
-      </View>
-      <View style={styles.box2}>
-        <Text style={styles.title}>Working Time</Text>
-        <Text style={styles.text1}>{doctor.workHours}</Text>
-      </View>
-      <View style={styles.box2}>
-        <Text style={styles.title}>Reviews</Text>
-        <View>
-          <View style={styles.cardReview}>
-            <Image source={{ uri: doctor.imageUrl }} style={styles.imageReview} />
-            <View style={styles.namecard}>
-              <Text style={styles.text}>{review.patient.name}</Text>
-              <Text style={styles.text}>★ {review.patient.rating}</Text>
-            </View>
-          </View>
-          <Text style={styles.text1}>{review.patient.comment}</Text>
-        </View>
-      </View>
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Book Appointment')}>
-        <Text style={styles.buttontext}>Book Appointment</Text>
-      </TouchableOpacity>
+      {renderDoctorCard(doctor)} {/* Mostrar la tarjeta del doctor */}
+      <CircleInfo doctor={doctor} /> {/* Mostrar CircleInfo */}
+      <FlatList
+        data={data}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.key}
+        ListFooterComponent={
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Book Appointment')}>
+            <Text style={styles.buttontext}>Book Appointment</Text>
+          </TouchableOpacity>
+        }
+      />
     </View>
   );
 };
@@ -128,7 +150,7 @@ const styles = StyleSheet.create({
   },
   cardReview: {
     flexDirection: 'row',
-    margin: 10,
+    margin: 0,
   },
   image: {
     width: 80,
@@ -180,8 +202,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   box2: {
-    padding: 5,
-    marginVertical: 10,
+    padding: 0,
+    marginVertical: 0,
     width: '95%',
     alignSelf: 'center',
   },

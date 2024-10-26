@@ -58,20 +58,26 @@ function HomeStackScreen() {
 const Tab = createBottomTabNavigator();
 const TabNavigator = () => {
   const tabs = [
-    { id: 1, name: 'Home', component: HomeStackScreen, icon: 'home', color: '#877EA1' }, // Rosa suave
-    { id: 2, name: 'Appointments', component: AppointmentsScreen, icon: 'calendar', color: '#B77B7E' }, // Naranja suave
-    { id: 3, name: 'Favorites', component: FavoritesScreen, icon: 'star', color: '#C6CACC' }, // Amarillo suave
-    { id: 4, name: 'Profile', component: ProfileScreen, icon: 'account-circle', color: '#81C995' }, // Verde suave
+    { id: 1, name: 'Home', component: HomeStackScreen, icon: 'home', color: '#877EA1' },
+    { id: 2, name: 'Appointments', component: AppointmentsScreen, icon: 'calendar', color: '#B77B7E' },
+    { id: 3, name: 'Favorites', component: FavoritesScreen, icon: 'star', color: '#C6CACC' },
+    { id: 4, name: 'Profile', component: ProfileScreen, icon: 'account-circle', color: '#81C995' },
   ];
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Tab.Navigator
         initialRouteName='Home'
-        screenOptions={{
+        screenOptions={({ route }) => ({
           headerShown: false,
-          tabBarStyle: styles.tabBar,
-        }}
+          tabBarStyle:
+            route.name === 'Home' ||
+            route.name === 'Appointments' ||
+            route.name === 'Favorites' ||
+            route.name === 'Profile'
+              ? styles.tabBar
+              : { display: 'none' }, // Ocultar la barra si es All Doctor, Doctor Details, o Book Appointment
+        })}
       >
         {tabs.map((item) => (
           <Tab.Screen
@@ -112,7 +118,7 @@ const styles = StyleSheet.create({
   tabBar: {
     height: 70,
     position: 'absolute',
-    bottom: 25,
+    bottom: 0,
     marginHorizontal: 16,
     borderRadius: 10,
     justifyContent: 'space-around',
