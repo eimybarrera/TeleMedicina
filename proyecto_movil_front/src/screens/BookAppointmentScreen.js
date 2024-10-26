@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   selectTimeText: {
-    marginTop: 15,
+    marginTop: 0,
     fontWeight: 'bold',
     fontSize: 16,
     textAlign: 'left',
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'space-around',
     marginTop: 5,
-    margin: 20,
+    margin: 5,
   },
   timeOption: {
     padding: 10,
