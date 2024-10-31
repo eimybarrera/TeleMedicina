@@ -46,8 +46,43 @@ const getPatientByEmailAndPassword = async (req, res) => {
       res.status(500).json({ error: 'Error interno del servidor' });
     }
   };
+  const updatePatient = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { nombre, email, contraseña, fecha_nacimiento, direccion, historial_medico, foto_perfil } = req.body;
+  
+      const connection = await getConnection();
+      const result = await connection.query(
+        `UPDATE pacientes SET nombre = ?, email = ?, contraseña = ?, fecha_nacimiento = ?, direccion = ?, historial_medico = ?, foto_perfil = ? 
+         WHERE id_paciente = ?`, // Usando id_paciente
+        [nombre, email, contraseña, fecha_nacimiento, direccion, historial_medico, foto_perfil, id]
+      );
+  
+      res.status(200).json({ message: 'Paciente actualizado exitosamente' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    }
+  };
+  
+  const deletePatient = async (req, res) => {
+    try {
+      const { id } = req.params;
+  
+      const connection = await getConnection();
+      await connection.query(`DELETE FROM pacientes WHERE id_paciente = ?`, [id]); // Usando id_paciente
+  
+      res.status(200).json({ message: 'Paciente eliminado exitosamente' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    }
+  };
+  
   
 export const patientMethods = {
   createPatient,
   getPatientByEmailAndPassword,
+  updatePatient,
+  deletePatient
 };
