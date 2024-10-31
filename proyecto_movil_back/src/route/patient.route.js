@@ -9,4 +9,7 @@ router.post('/pacientes', patientMethods.createPatient);
 router.post('/pacientes/login', patientMethods.getPatientByEmailAndPassword);
 router.put('/pacientes/:id', patientMethods.updatePatient); // Actualizar paciente por ID
 router.delete('/pacientes/:id', patientMethods.deletePatient); // Eliminar paciente por ID
+router.put('/pacientes/:id/cambiar-contrasena', patientMethods.updatePassword);
+
+
 export default router;

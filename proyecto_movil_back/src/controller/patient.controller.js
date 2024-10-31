@@ -78,11 +78,45 @@ const getPatientByEmailAndPassword = async (req, res) => {
       res.status(500).json({ error: 'Error interno del servidor' });
     }
   };
+  const updatePassword = async (req, res) => {
+    try {
+      const { id } = req.params; // ID del paciente en la URL
+      const { currentPassword, newPassword } = req.body; // Contraseña actual y nueva
+  
+      if (!currentPassword || !newPassword) {
+        return res.status(400).json({ error: 'La contraseña actual y la nueva son obligatorias' });
+      }
+  
+      const connection = await getConnection();
+      
+      // Verificar si el paciente existe y la contraseña actual es correcta
+      const [result] = await connection.query(
+        `SELECT * FROM pacientes WHERE id_paciente = ? AND contraseña = ?`,
+        [id, currentPassword]
+      );
+  
+      if (result.length === 0) {
+        return res.status(404).json({ error: 'Paciente no encontrado o contraseña actual incorrecta' });
+      }
+  
+      // Actualizar la contraseña
+      await connection.query(
+        `UPDATE pacientes SET contraseña = ? WHERE id_paciente = ?`,
+        [newPassword, id]
+      );
+  
+      res.status(200).json({ message: 'Contraseña actualizada exitosamente' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    }
+  };
   
   
 export const patientMethods = {
   createPatient,
   getPatientByEmailAndPassword,
   updatePatient,
-  deletePatient
+  deletePatient,
+  updatePassword
 };
