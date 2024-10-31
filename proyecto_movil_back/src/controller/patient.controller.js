@@ -22,7 +22,32 @@ const createPatient = async (req, res) => {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 };
-
+const getPatientByEmailAndPassword = async (req, res) => {
+    try {
+      const { email, contraseña } = req.body;
+  
+      if (!email || !contraseña) {
+        return res.status(400).json({ error: 'Email y contraseña son obligatorios' });
+      }
+  
+      const connection = await getConnection();
+      const [result] = await connection.query(
+        `SELECT * FROM pacientes WHERE email = ? AND contraseña = ?`,
+        [email, contraseña]
+      );
+  
+      if (result.length > 0) {
+        res.status(200).json({ message: 'Paciente encontrado', paciente: result[0] });
+      } else {
+        res.status(404).json({ error: 'Paciente no encontrado' });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    }
+  };
+  
 export const patientMethods = {
   createPatient,
+  getPatientByEmailAndPassword,
 };
