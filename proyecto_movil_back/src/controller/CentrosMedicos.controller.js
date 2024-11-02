@@ -60,5 +60,5 @@ const getMedicosPorCentro = async (req, res) => {
 // Exportar las funciones
 export const metodosCentrosYDoctores = {
   getMedicalCenterInfo,
-  getDoctorInfo,
+  getMedicosPorCentro,
 };
