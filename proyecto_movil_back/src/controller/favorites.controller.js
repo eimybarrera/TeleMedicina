@@ -7,7 +7,7 @@ try {
     const { id_paciente, id_doctor } = req.body;
 
     const [rows] = await connection.query(
-      `SELECT * FROM favoritos WHERE id_paciente = ? AND id_doctor = ?`,
+      `SELECT * FROM favoritos WHERE id_paciente = ?`,
     [id_paciente, id_doctor]
     );
 

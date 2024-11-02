@@ -5,7 +5,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 const AppointmentsScreen = ({route}) => {
 const [appointments, setAppointments] = useState([]);
-const { id_paciente } = route.params;
+//const { id_paciente } = route.params;
 
 const navigation = useNavigation();
 

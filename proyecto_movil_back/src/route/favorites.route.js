@@ -1,4 +1,4 @@
-import {Router} from 'express';
+import { Router } from 'express';
 import { favorites } from '../controller/favorites.controller.js';
 
 const router = Router();
