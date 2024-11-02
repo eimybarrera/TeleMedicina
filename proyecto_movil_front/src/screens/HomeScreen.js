@@ -1,27 +1,89 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlatList, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 const InicioAppMedica = () => {
   const navigation = useNavigation();
-
-  // State to store the selected category
   const [selectedCategory, setSelectedCategory] = useState('All');
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const images = [
-    { id: '1', uri: require('../../assets/WhatsApp Image 2024-10-18 at 9.26.33 PM.jpeg') },
-    { id: '2', uri: require('../../assets/WhatsApp Image 2024-10-18 at 9.27.17 PM.jpeg') },
-    { id: '3', uri: require('../../assets/WhatsApp Image 2024-10-18 at 9.27.34 PM.jpeg') },
-    { id: '4', uri: require('../../assets/WhatsApp Image 2024-10-18 at 9.28.22 PM.jpeg') },
-    { id: '5', uri: require('../../assets/WhatsApp Image 2024-10-18 at 9.28.35 PM.jpeg') },
+    {
+      id: '1',
+      uri: require('../../assets/WhatsApp Image 2024-10-18 at 9.26.33 PM.jpeg'),
+      name: 'Healthy Heart Clinic',
+    },
+    {
+      id: '2',
+      uri: require('../../assets/WhatsApp Image 2024-10-18 at 9.27.17 PM.jpeg'),
+      name: 'Joyful Child Hospital',
+    },
+    {
+      id: '3',
+      uri: require('../../assets/WhatsApp Image 2024-10-18 at 9.27.34 PM.jpeg'),
+      name: 'Healthy Skin Dermatology Center',
+    },
+    {
+      id: '4',
+      uri: require('../../assets/WhatsApp Image 2024-10-18 at 9.28.22 PM.jpeg'),
+      name: 'Radiant Smile Dental Clinic',
+    },
+    {
+      id: '5',
+      uri: require('../../assets/WhatsApp Image 2024-10-18 at 9.28.35 PM.jpeg'),
+      name: 'Healthy Brain Hospital',
+    },
   ];
 
-  // Function to handle category selection
   const handleCategoryPress = (category) => {
     setSelectedCategory(category);
     navigation.navigate('espes', { category });
+  };
+
+  const Banner = () => {
+    useEffect(() => {
+      const interval = setInterval(() => {
+        setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+      }, 7000);
+
+      return () => clearInterval(interval);
+    }, []);
+
+    return (
+      <View style={styles.banner}>
+        <FlatList
+          data={[images[currentImageIndex]]}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              style={styles.imageContainer}
+              onPress={() => {
+                // Navegar usando el nombre del centro médico
+                if (item.name) {
+                  navigation.navigate('DoctorCenter', { medicalCenter: item.name });
+                } else {
+                  console.warn('No center name found for navigation.');
+                }
+              }}
+            >
+              <Image
+                source={item.uri}
+                style={styles.bannerImage}
+                onError={() => console.error('Error loading image')}
+              />
+              <View style={styles.overlay}>
+                <Text style={styles.overlayText}>{item.name}</Text>
+              </View>
+            </TouchableOpacity>
+          )}
+          keyExtractor={(item) => item.id}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+        />
+      </View>
+    );
   };
 
   return (
@@ -41,66 +103,44 @@ const InicioAppMedica = () => {
           <FontAwesome name='search' size={20} color='black' style={styles.searchIcon} />
         </View>
       </View>
-
-      {/* Banner with images using FlatList */}
-      <View style={styles.banner}>
-        <FlatList
-          data={images}
-          renderItem={({ item }) => <Image source={item.uri} style={styles.bannerImage} />}
-          keyExtractor={(item) => item.id}
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-        />
-      </View>
-
-      {/* Categories with icons */}
+      <Banner />
       <View style={styles.categories}>
         <TouchableOpacity style={styles.categoryItem} onPress={() => handleCategoryPress('General')}>
           <FontAwesome name='heartbeat' size={40} color='#2A9D8F' />
           <Text style={styles.categoryText}>General</Text>
         </TouchableOpacity>
-
         <TouchableOpacity style={styles.categoryItem} onPress={() => handleCategoryPress('Cardiology')}>
           <FontAwesome name='heart' size={40} color='#E76F51' />
           <Text style={styles.categoryText}>Cardiology</Text>
         </TouchableOpacity>
-
         <TouchableOpacity style={styles.categoryItem} onPress={() => handleCategoryPress('Dentistry')}>
           <FontAwesome5 name='tooth' size={40} color='#2A9D8F' />
           <Text style={styles.categoryText}>Dentist</Text>
         </TouchableOpacity>
-
         <TouchableOpacity style={styles.categoryItem} onPress={() => handleCategoryPress('Dermatology')}>
           <FontAwesome name='sun-o' size={40} color='#E9C46A' />
           <Text style={styles.categoryText}>Dermatology</Text>
         </TouchableOpacity>
-
         <TouchableOpacity style={styles.categoryItem} onPress={() => handleCategoryPress('Neurology')}>
           <FontAwesome name='brain' size={40} color='#F4A261' />
           <Text style={styles.categoryText}>Neurology</Text>
         </TouchableOpacity>
-
         <TouchableOpacity style={styles.categoryItem} onPress={() => handleCategoryPress('Pediatrics')}>
           <FontAwesome name='child' size={40} color='#6C5B7B' />
           <Text style={styles.categoryText}>Pediatrics</Text>
         </TouchableOpacity>
-
         <TouchableOpacity style={styles.categoryItem} onPress={() => handleCategoryPress('Gynecology')}>
           <FontAwesome name='female' size={40} color='#F7B32B' />
           <Text style={styles.categoryText}>Gynecology</Text>
         </TouchableOpacity>
-
         <TouchableOpacity style={styles.categoryItem} onPress={() => handleCategoryPress('Ophthalmology')}>
           <FontAwesome name='eye' size={40} color='#2A9D8F' />
           <Text style={styles.categoryText}>Ophthalmology</Text>
         </TouchableOpacity>
-
         <TouchableOpacity style={styles.categoryItem} onPress={() => handleCategoryPress('Psychiatry')}>
           <FontAwesome name='medkit' size={40} color='#F4A261' />
           <Text style={styles.categoryText}>Psychiatry</Text>
         </TouchableOpacity>
-
         <TouchableOpacity onPress={() => navigation.navigate('All Doctor')} style={styles.viewAllContainer}>
           <Text style={styles.viewAllText}>See all</Text>
         </TouchableOpacity>
@@ -160,17 +200,27 @@ const styles = StyleSheet.create({
     top: '50%',
     transform: [{ translateY: -12 }],
   },
-  banner: {
-    marginTop: 20,
-    backgroundColor: '#f0f0f0',
-    padding: 0,
-    borderRadius: 10,
-    overflow: 'hidden',
-  },
   bannerImage: {
+    width: '100%',
+    height: 200,
+    resizeMode: 'cover',
+  },
+  imageContainer: {
     width: 300,
-    height: 250,
-    borderRadius: 10,
+    height: 200,
+    marginHorizontal: 10,
+  },
+  overlay: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    padding: 10,
+  },
+  overlayText: {
+    color: 'white',
+    fontSize: 16,
   },
   categories: {
     flexDirection: 'row',
@@ -186,15 +236,12 @@ const styles = StyleSheet.create({
   categoryText: {
     fontSize: 12,
     marginTop: 5,
-    color: 'rgba(0, 0, 0, 0.6)',
   },
   viewAllContainer: {
-    width: '100%',
-    marginTop: 10,
     alignItems: 'center',
+    marginTop: 20,
   },
   viewAllText: {
-    fontSize: 16,
     color: '#2A9D8F',
     fontWeight: 'bold',
   },

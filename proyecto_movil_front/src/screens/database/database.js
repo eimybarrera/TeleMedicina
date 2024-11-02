@@ -121,7 +121,7 @@ const doctorsData = [
     id: '10',
     name: 'Dr. Sofía Méndez',
     specialty: 'General',
-    medicalCenter: 'Advanced Rheumatology Center',
+    medicalCenter: 'Healthy Heart Clinic',
     patients: 400,
     experience: '5 years',
     rating: 4.7,
