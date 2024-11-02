@@ -14,8 +14,16 @@ const FavoritesScreen = () => {
 
     const renderFavorite = ({ item }) => (
     <View style={styles.favoriteContainer}>
-        <Text style={styles.text}>Nombre: {item.name}</Text>
-        <Text style={styles.text}>Especialidad: {item.specialty}</Text>
+        <Image source={{ uri: item.imageUrl }} style={styles.image} />
+        <View style={styles.cardContent}>
+        <Text style={styles.name}>{item.name}</Text>
+        <Text style={styles.specialty}>{item.specialty}</Text>
+        <Text style={styles.center}>{item.medicalCenter}</Text>
+        <View style={styles.ratingContainer}>
+            <Text style={styles.rating}>★ {item.rating}</Text>
+            <Text style={styles.reviews}> | {item.reviews} Reviews</Text>
+        </View>
+        </View>
     </View>
 );
 

@@ -3,13 +3,18 @@ import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native
 import { useNavigation } from '@react-navigation/native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
-const AppointmentsScreen = () => {
-const [appointments, setAppointments] = useState([
-    { id: '1', doctor: 'Dr. Carlos López', date: '2024-10-15', time: '10:00 AM', specialty: 'Cardiología' },
-    { id: '2', doctor: 'Dra. Ana Pérez', date: '2024-10-20', time: '2:00 PM', specialty: 'Dermatología' },
-]);
+const AppointmentsScreen = ({route}) => {
+const [appointments, setAppointments] = useState([]);
+const { id_paciente } = route.params;
 
 const navigation = useNavigation();
+
+// useEffect(() => {
+//     fetch(`http://localhost:3000/citas/${id_paciente}`)
+//     .then((response) => response.json())
+//     .then((data) => setAppointments(data))
+//     .catch((error) => console.error('Error fetching appointments:', error));
+// }, [id_paciente]);
 
 const renderAppointment = ({ item }) => (
     <View style={styles.appointmentContainer}>
