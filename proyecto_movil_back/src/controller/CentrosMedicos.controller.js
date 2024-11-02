@@ -24,7 +24,7 @@ const getMedicalCenterInfo = async (req, res) => {
 const getMedicosPorCentro = async (req, res) => {
   try {
     const connection = await getConnection();
-    const nombreCentro = req.params.nombreCentro; // Asegúrate de que este es el parámetro correcto
+    const idcentro = req.params.nombreCentro; // Asegúrate de que este es el parámetro correcto
     const [result] = await connection.query(
       `
       SELECT 
@@ -42,8 +42,8 @@ const getMedicosPorCentro = async (req, res) => {
       LEFT JOIN 
         centros_medicos c ON m.id_centro = c.id_centro
       WHERE 
-        c.nombre_centro = ?`,
-      [nombreCentro]
+        id_centro = ?`,
+      [idcentro]
     );
 
     if (result.length === 0) {

@@ -1,6 +1,6 @@
 import express from 'express';
 import morgan from 'morgan';
-import centros from './route/Centrosmedicos.route.js';
+import centerrouter from './route/Centrosmedicos.route.js';
 import router from './route/doctor.route.js';
 import patientRouter from './route/patient.route.js';
 const app = express();
@@ -15,5 +15,6 @@ app.use(express.json());
 //rutas
 app.use('/', router);
 app.use('/', patientRouter);
-app.use('/', centros);
+app.use('/', centerrouter);
+
 export default app;
