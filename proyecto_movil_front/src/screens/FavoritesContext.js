@@ -12,6 +12,7 @@ const [favorites, setFavorites] = useState([]);
 
   // Función para agregar o quitar favoritos
 const toggleFavorite = (doctor) => {
+    console.log("Toggle favorite:", doctor);
     setFavorites((prevFavorites) => {
     if (prevFavorites.some((fav) => fav.id === doctor.id)) {
         // Si ya está en favoritos, lo quitamos

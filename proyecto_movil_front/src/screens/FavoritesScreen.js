@@ -5,10 +5,6 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useFavorites } from './FavoritesContext';
 
 const FavoritesScreen = () => {
-// const [favorites, setFavorites] = useState([
-//     { id: '1', name: 'Dr. María López', specialty: 'Pediatría' },
-//     { id: '2', name: 'Clínica La Esperanza', specialty: 'Urgencias' },
-// ]);
     const { favorites } = useFavorites();
     const navigation = useNavigation();
 
@@ -17,6 +13,10 @@ const FavoritesScreen = () => {
         <Text style={styles.name}>{item.name}</Text>
         <Text style={styles.specialty}>{item.specialty}</Text>
         <Text style={styles.center}>{item.medicalCenter}</Text>
+        <View style={styles.ratingContainer}>
+            <Text style={styles.rating}>★ {item.rating}</Text>
+            <Text style={styles.reviews}> | {item.reviews} Reviews</Text>
+        </View>
     </View>
 );
 
