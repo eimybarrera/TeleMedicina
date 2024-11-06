@@ -24,7 +24,7 @@ export const FavoritesProvider = ({ children, userId }) => {
 
     // Función para agregar o quitar favoritos
     const toggleFavorite = (doctor) => {
-        axios.post(`http://TU_BACKEND_URL/favorites/toggle`, {
+        axios.post(`http:del back/toggle`, {
             id_paciente: userId,
             id_doctor: doctor.id
         })
