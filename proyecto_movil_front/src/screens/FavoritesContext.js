@@ -1,31 +1,52 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import axios from 'axios';
 
-// Contexto
 const FavoritesContext = createContext();
 
 // Hook personalizado 
 export const useFavorites = () => useContext(FavoritesContext);
 
-// Proveedor del contexto
-export const FavoritesProvider = ({ children }) => {
-const [favorites, setFavorites] = useState([]);
+export const FavoritesProvider = ({ children, userId }) => {
+    const [favorites, setFavorites] = useState([]);
 
-  // Función para agregar o quitar favoritos
-const toggleFavorite = (doctor) => {
-    setFavorites((prevFavorites) => {
-    if (prevFavorites.some((fav) => fav.id === doctor.id)) {
-        // Si ya está en favoritos, lo quitamos
-        return prevFavorites.filter((fav) => fav.id !== doctor.id);
-    } else {
-        // Si no está, lo agregamos
-        return [...prevFavorites, doctor];
-    }
-    });
-};
+    // Obtener favoritos al iniciar la aplicación
+    useEffect(() => {
+        if (userId) {
+            axios.get(`http: del back/${userId}`)
+                .then(response => {
+                    setFavorites(response.data);
+                })
+                .catch(error => {
+                    console.error("Error al obtener favoritos:", error);
+                });
+        }
+    }, [userId]);
 
-return (
-    <FavoritesContext.Provider value={{ favorites, toggleFavorite }}>
-    {children}
-    </FavoritesContext.Provider>
-);
+    // Función para agregar o quitar favoritos
+    const toggleFavorite = (doctor) => {
+        axios.post(`http://TU_BACKEND_URL/favorites/toggle`, {
+            id_paciente: userId,
+            id_doctor: doctor.id
+        })
+        .then(() => {
+            setFavorites((prevFavorites) => {
+                if (prevFavorites.some((fav) => fav.id_doctor === doctor.id)) {
+                    // Si ya está en favoritos, lo quitamos
+                    return prevFavorites.filter((fav) => fav.id_doctor !== doctor.id);
+                } else {
+                    // Si no está, lo agregamos
+                    return [...prevFavorites, doctor];
+                }
+            });
+        })
+        .catch(error => {
+            console.error("Error al modificar favoritos:", error);
+        });
+    };
+
+    return (
+        <FavoritesContext.Provider value={{ favorites, toggleFavorite }}>
+            {children}
+        </FavoritesContext.Provider>
+    );
 };
