@@ -29,12 +29,9 @@ const obtenerFavoritos = async (req, res) => {
     const connection = await getConnection();
     const { id_paciente } = req.params;
 
-    const [rows] = await connection.query(
-      `SELECT d.id_doctor, d.nombre, d.especialidad FROM favoritos f
-    JOIN doctores d ON f.id_doctor = d.id_doctor
-    WHERE f.id_paciente = ?`,
-      [id_paciente]
-    );
+    const [rows] = await connection.query(`SELECT * FROM favoritos WHERE id_paciente = ? AND id_doctor = ?`, 
+      [id_paciente, id_doctor]);
+
 
     res.json(rows);
   } catch (error) {
