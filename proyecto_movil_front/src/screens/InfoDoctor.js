@@ -110,7 +110,7 @@ const InfoDoctorScreen = ({ route }) => {
         renderItem={renderItem}
         keyExtractor={(item) => item.key}
         ListFooterComponent={
-          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Book Appointment')}>
+          <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('BookAppointment')}>
             <Text style={styles.buttontext}>Book Appointment</Text>
           </TouchableOpacity>
         }

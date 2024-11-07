@@ -141,7 +141,7 @@ const InicioAppMedica = () => {
           <FontAwesome name='medkit' size={40} color='#F4A261' />
           <Text style={styles.categoryText}>Psychiatry</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('All Doctor')} style={styles.viewAllContainer}>
+        <TouchableOpacity onPress={() => navigation.navigate('AllDoctor')} style={styles.viewAllContainer}>
           <Text style={styles.viewAllText}>See all</Text>
         </TouchableOpacity>
       </View>
