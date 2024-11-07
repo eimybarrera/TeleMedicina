@@ -1,8 +1,8 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import doctorsData from './database/database';
 
 const categories = [
   'All',
@@ -37,16 +37,33 @@ const CategoryBar = ({ selectedCategory, onCategoryPress }) => {
 
 const AllDoctorScreen = () => {
   const navigation = useNavigation();
+  const [doctors, setDoctors] = useState([]);
   const [searchText, setSearchText] = useState('');
-  const [filteredDoctors, setFilteredDoctors] = useState(doctorsData);
+  const [filteredDoctors, setFilteredDoctors] = useState(doctors);
   const [selectedCategory, setSelectedCategory] = useState('all');
+
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    axios
+      .get('http://localhost:3000/medicos') // Asegúrate de que esta URL sea correcta
+      .then((response) => {
+        setDoctors(response.data);
+        setFilteredDoctors(response.data); // Inicializamos el estado de doctores filtrados
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error fetching doctors:', error);
+        setLoading(false);
+      });
+  }, []);
 
   const handleCategoryPress = (category) => {
     setSelectedCategory(category);
     if (category === 'All') {
-      setFilteredDoctors(doctorsData); // Mostrar todos los doctores si la categoría es 'All'
+      setFilteredDoctors(doctors); // Mostrar todos los doctores si la categoría es 'All'
     } else {
-      const filteredData = doctorsData.filter(
+      const filteredData = doctors.filter(
         (doctor) => doctor.specialty.toLowerCase() === category.toLowerCase() // Filtrar por categoría
       );
       setFilteredDoctors(filteredData);
@@ -56,7 +73,7 @@ const AllDoctorScreen = () => {
   const handleSearch = (text) => {
     setSearchText(text);
     if (text) {
-      const filteredData = doctorsData.filter(
+      const filteredData = doctors.filter(
         (doctor) =>
           doctor.name.toLowerCase().includes(text.toLowerCase()) ||
           doctor.specialty.toLowerCase().includes(text.toLowerCase())
@@ -74,7 +91,7 @@ const AllDoctorScreen = () => {
       key={item.id}
       onPress={() => {
         console.log('Doctor ID:', item.id);
-        navigation.navigate('Doctor Details', { doctorId: item.id });
+        navigation.navigate('DoctorDetails', { doctorId: item.id });
       }}
     >
       <View style={styles.cardContainer}>
@@ -111,7 +128,7 @@ const AllDoctorScreen = () => {
       </View>
 
       <ScrollView style={styles.scrollContainer}>
-        {filteredDoctors.map((doctor) => renderDoctorCard(doctor))}
+        {loading ? <Text>Cargando doctores...</Text> : filteredDoctors.map((doctor) => renderDoctorCard(doctor))}
       </ScrollView>
     </View>
   );
