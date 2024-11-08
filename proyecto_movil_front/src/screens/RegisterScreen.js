@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import {
   Text,
   View,
@@ -9,8 +9,44 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import { Picker } from "@react-native-picker/picker";
+
 const RegisterScreen = ({ navigation }) => {
+  const [nombre, setNombre] = useState("");
+  const [email, setEmail] = useState("");
+  const [contraseña, setContraseña] = useState("");
+  const [direccion, setDireccion] = useState("");
+  const [fechaNacimiento, setFechaNacimiento] = useState("");
   const [selectedGender, setSelectedGender] = useState("");
+
+  const registerPatient = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/pacientes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nombre,
+          email,
+          contraseña,
+          direccion,
+          fecha_nacimiento: fechaNacimiento,
+          genero: selectedGender,
+        }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        console.log('Paciente creado:', data);
+        navigation.navigate("Main"); // Navegar a la pantalla principal
+      } else {
+        console.error('Error al crear paciente:', data.error);
+      }
+    } catch (error) {
+      console.error('Error de conexión:', error);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
@@ -22,10 +58,31 @@ const RegisterScreen = ({ navigation }) => {
       </View>
       <Text style={styles.titulo}>Create Account</Text>
       <Text style={styles.subTitulo}> We are here to help you!</Text>
-      <TextInput placeholder="Your Name" style={styles.inputContainer} />
-      <TextInput placeholder="Your Email" style={styles.inputContainer} />
-      <TextInput placeholder="Your Password" style={styles.inputContainer} />
-      <TextInput placeholder="Your Adress" style={styles.inputContainer} />
+      <TextInput
+        placeholder="Your Name"
+        style={styles.inputContainer}
+        value={nombre}
+        onChangeText={setNombre}
+      />
+      <TextInput
+        placeholder="Your Email"
+        style={styles.inputContainer}
+        value={email}
+        onChangeText={setEmail}
+      />
+      <TextInput
+        placeholder="Your Password"
+        style={styles.inputContainer}
+        secureTextEntry
+        value={contraseña}
+        onChangeText={setContraseña}
+      />
+      <TextInput
+        placeholder="Your Address"
+        style={styles.inputContainer}
+        value={direccion}
+        onChangeText={setDireccion}
+      />
       <View style={styles.inputContainer}>
         <Icon
           name="calendar-outline"
@@ -33,7 +90,12 @@ const RegisterScreen = ({ navigation }) => {
           color="#6B7280"
           style={styles.icon}
         />
-        <TextInput placeholder="Date of Birth" style={styles.input} />
+        <TextInput
+          placeholder="Date of Birth: YYYY-MM-DD"
+          style={styles.input}
+          value={fechaNacimiento}
+          onChangeText={setFechaNacimiento}
+        />
       </View>
       <View style={styles.inputContainer}>
         <Picker
@@ -46,11 +108,8 @@ const RegisterScreen = ({ navigation }) => {
           <Picker.Item label="Female" value="female" />
         </Picker>
       </View>
-      
-      <TouchableOpacity
-        onPress={() => navigation.navigate("Main")}
-        style={styles.touch}
-      >
+
+      <TouchableOpacity onPress={registerPatient} style={styles.touch}>
         <Text style={styles.text}> Sign In</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate("LoginScreen")}>
@@ -59,6 +118,7 @@ const RegisterScreen = ({ navigation }) => {
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -74,7 +134,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: "gray",
   },
-
   touch: {
     padding: 10,
     paddingStart: 30,
@@ -124,11 +183,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     marginTop: 15,
     borderRadius: 10,
-    justifyContent: "center",  // Para centrar verticalmente el Picker
+    justifyContent: "center",
   },
   picker: {
     height: 40,
     width: "100%",
   },
 });
+
 export default RegisterScreen;
