@@ -114,7 +114,8 @@ export const getDoctorReviews = async (req, res) => {
         r.calificacion AS rating,
         r.comentario AS comment,
         r.fecha_resena AS reviewDate,
-        p.nombre AS patientName
+        p.nombre AS patientName,
+        p.foto_perfil AS patientImage  -- Aquí estamos incluyendo la URL de la imagen del paciente
       FROM 
         reseñas_pacientes r
       LEFT JOIN 

@@ -1,10 +1,8 @@
 import { FontAwesome5 } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlatList, Image, StyleSheet, Text, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-web';
-import doctorsData from './database/database';
-import patientReviews from './database/reviews';
 
 const CircleInfo = ({ doctor }) => (
   <View style={styles.info}>
@@ -47,8 +45,51 @@ const renderDoctorCard = (doctor) => (
 const InfoDoctorScreen = ({ route }) => {
   const navigation = useNavigation();
   const { doctorId } = route.params;
-  const doctor = doctorsData.find((doc) => doc.id === doctorId);
-  const review = patientReviews.find((doc) => doc.doctorId === doctorId);
+  const [doctor, setDoctor] = useState(null);
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchDoctorData = async () => {
+      try {
+        setLoading(true);
+
+        // Obtener los datos del doctor
+        const doctorResponse = await fetch(`http://localhost:3000/medicos/${doctorId}`);
+        const doctorData = await doctorResponse.json();
+
+        // Obtener las reseñas del doctor
+        const reviewsResponse = await fetch(`http://localhost:3000/medicos/${doctorId}/resena`);
+        const reviewsData = await reviewsResponse.json();
+
+        // Actualizar el estado con los datos obtenidos
+        setDoctor(doctorData);
+        setReviews(reviewsData);
+      } catch (error) {
+        console.error('Error al obtener los datos del doctor:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDoctorData();
+  }, [doctorId]);
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <Text>Cargando...</Text>
+      </View>
+    );
+  }
+
+  if (!doctor) {
+    return (
+      <View>
+        <Text>Doctor no encontrado.</Text>
+      </View>
+    );
+  }
 
   if (!doctor) {
     return (
@@ -83,28 +124,32 @@ const InfoDoctorScreen = ({ route }) => {
       content: (
         <View style={styles.box2}>
           <Text style={styles.title}>Reviews</Text>
-          <View>
-            <View style={styles.cardReview}>
-              <Image source={{ uri: doctor.imageUrl }} style={styles.imageReview} />
-              <View style={styles.namecard}>
-                <Text style={styles.text}>{review.patient.name}</Text>
-                <Text style={styles.text}>★ {review.patient.rating}</Text>
+          {reviews.length > 0 ? (
+            reviews.map((review, index) => (
+              <View key={index} style={styles.cardReview}>
+                {review.patientImage && <Image source={{ uri: review.patientImage }} style={styles.imageReview} />}
+                <View style={styles.namecard}>
+                  <Text style={styles.text}>{review.patientName}</Text>
+                  <Text style={styles.text}>★ {review.rating}</Text>
+                </View>
+                <Text style={styles.text1}>{review.comment}</Text>
               </View>
-            </View>
-            <Text style={styles.text1}>{review.patient.comment}</Text>
-          </View>
+            ))
+          ) : (
+            <Text>No reviews available</Text>
+          )}
         </View>
       ),
     },
   ];
 
-  // Función para renderizar cada ítem del FlatList
+  // Función para cada ítem del FlatList
   const renderItem = ({ item }) => <View style={{ marginVertical: 10 }}>{item.content}</View>;
 
   return (
     <View style={styles.container}>
-      {renderDoctorCard(doctor)} {/* Mostrar la tarjeta del doctor */}
-      <CircleInfo doctor={doctor} /> {/* Mostrar CircleInfo */}
+      {renderDoctorCard(doctor)}
+      <CircleInfo doctor={doctor} />
       <FlatList
         data={data}
         renderItem={renderItem}
