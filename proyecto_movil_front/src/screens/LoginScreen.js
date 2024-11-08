@@ -1,7 +1,39 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+
 const LoginScreen = ({ navigation }) => {
+  const [email, setEmail] = useState('');
+  const [contraseña, setContraseña] = useState('');
+  const [error, setError] = useState(''); // Estado para manejar el mensaje de error
+
+  const loginPatient = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/pacientes/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          contraseña,
+        }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        console.log('Paciente encontrado:', data);
+        setError(''); // Limpiar el mensaje de error si el login es exitoso
+        navigation.navigate('Main'); // Navegar a la pantalla principal
+      } else {
+        setError(data.error || 'Credenciales incorrectas'); // Mostrar mensaje de error
+      }
+    } catch (error) {
+      console.error('Error de conexión:', error);
+      setError('Error de conexión con el servidor'); // Mostrar mensaje de error de conexión
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
@@ -13,16 +45,31 @@ const LoginScreen = ({ navigation }) => {
 
       <View style={styles.inputContainer}>
         <Icon name='mail-outline' size={20} color='#6B7280' style={styles.icon} />
-        <TextInput placeholder='Your Email' style={styles.input} />
+        <TextInput
+          placeholder='Your Email'
+          style={styles.input}
+          value={email}
+          onChangeText={setEmail}
+        />
       </View>
 
       <View style={styles.inputContainer}>
         <Icon name='lock-closed-outline' size={20} color='#6B7280' style={styles.icon} />
-        <TextInput placeholder='Password' style={styles.input} secureTextEntry />
+        <TextInput
+          placeholder='Password'
+          style={styles.input}
+          secureTextEntry
+          value={contraseña}
+          onChangeText={setContraseña}
+        />
       </View>
-      <TouchableOpacity onPress={() => navigation.navigate('Main')} style={styles.touch}>
+
+      {error ? <Text style={styles.errorText}>{error}</Text> : null} {/* Mostrar el mensaje de error */}
+
+      <TouchableOpacity onPress={loginPatient} style={styles.touch}>
         <Text style={styles.text}> Sign In</Text>
       </TouchableOpacity>
+
       <Text style={{ marginBottom: 10, marginTop: 10 }}>--------------------or -----------------------</Text>
       <TouchableOpacity onPress={() => navigation.navigate('PasswordScreen')}>
         <Text style={{ color: '#1C64F2', marginBottom: 10, marginTop: 15 }}> Forgot password?</Text>
@@ -36,6 +83,7 @@ const LoginScreen = ({ navigation }) => {
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -94,5 +142,10 @@ const styles = StyleSheet.create({
     height: 100,
     marginBottom: 10,
   },
+  errorText: {
+    color: 'red',
+    marginTop: 10,
+  },
 });
+
 export default LoginScreen;
