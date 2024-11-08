@@ -127,11 +127,14 @@ const InfoDoctorScreen = ({ route }) => {
           {reviews.length > 0 ? (
             reviews.map((review, index) => (
               <View key={index} style={styles.cardReview}>
-                {review.patientImage && <Image source={{ uri: review.patientImage }} style={styles.imageReview} />}
-                <View style={styles.namecard}>
-                  <Text style={styles.text}>{review.patientName}</Text>
-                  <Text style={styles.text}>★ {review.rating}</Text>
+                <View style={styles.caja}>
+                  {review.patientImage && <Image source={{ uri: review.patientImage }} style={styles.imageReview} />}
+                  <View style={styles.namecard}>
+                    <Text style={styles.text}>{review.patientName}</Text>
+                    <Text style={styles.text}>★ {review.rating}</Text>
+                  </View>
                 </View>
+
                 <Text style={styles.text1}>{review.comment}</Text>
               </View>
             ))
@@ -189,12 +192,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#e0e0e0',
     padding: 20,
   },
+  caja: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    margin: 10,
+  },
   cardContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   cardReview: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     margin: 0,
   },
   image: {
