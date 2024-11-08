@@ -102,9 +102,46 @@ const getHorasDisponibles = async (req, res) => {
   }
 };
 
+export const getDoctorReviews = async (req, res) => {
+  const doctorId = req.params.id;
+
+  try {
+    const connection = await getConnection();
+    const [reviews] = await connection.query(
+      `
+      SELECT 
+        r.id_resena AS idReview,
+        r.calificacion AS rating,
+        r.comentario AS comment,
+        r.fecha_resena AS reviewDate,
+        p.nombre AS patientName
+      FROM 
+        reseñas_pacientes r
+      LEFT JOIN 
+        pacientes p ON r.id_paciente = p.id_paciente
+      WHERE 
+        r.id_medico = ?
+      ORDER BY 
+        r.fecha_resena DESC
+      `,
+      [doctorId]
+    );
+
+    if (reviews.length === 0) {
+      return res.status(404).json({ error: 'No se encontraron reseñas para este médico' });
+    }
+
+    res.json(reviews);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al obtener las reseñas' });
+  }
+};
+
 export const metodosDoctor = {
   getDoctor,
   getInfoDoctor,
   getFechasDisponibles,
   getHorasDisponibles,
+  getDoctorReviews,
 };
