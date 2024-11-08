@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [contraseña, setContraseña] = useState('');
-  const [error, setError] = useState(''); // Estado para manejar el mensaje de error
+  const [error, setError] = useState('');
 
   const loginPatient = async () => {
     try {
@@ -22,18 +22,20 @@ const LoginScreen = ({ navigation }) => {
 
       const data = await response.json();
       if (response.ok) {
-        console.log('Paciente encontrado:', data);
-        setError(''); // Limpiar el mensaje de error si el login es exitoso
-        navigation.navigate('Main'); // Navegar a la pantalla principal
+        const userName = data.paciente.nombre; // Nombre del usuario
+        const userEmail = data.paciente.email; // Email del usuario
+        const userProfilePic = data.paciente.foto_perfil; // URL de la foto de perfil
+        setError('');
+        // Navegamos a la pantalla de perfil y pasamos el nombre, el email y la foto de perfil
+        navigation.navigate('Main', { screen: 'Profile', params: { userName, userEmail, userProfilePic } });
       } else {
-        setError(data.error || 'Credenciales incorrectas'); // Mostrar mensaje de error
+        setError(data.error || 'Credenciales incorrectas');
       }
     } catch (error) {
       console.error('Error de conexión:', error);
-      setError('Error de conexión con el servidor'); // Mostrar mensaje de error de conexión
+      setError('Error de conexión con el servidor');
     }
   };
-
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
@@ -64,7 +66,7 @@ const LoginScreen = ({ navigation }) => {
         />
       </View>
 
-      {error ? <Text style={styles.errorText}>{error}</Text> : null} {/* Mostrar el mensaje de error */}
+      {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
       <TouchableOpacity onPress={loginPatient} style={styles.touch}>
         <Text style={styles.text}> Sign In</Text>
