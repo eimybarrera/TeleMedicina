@@ -2,18 +2,18 @@ import getConnection from '../database/database.js';
 
 const createPatient = async (req, res) => {
   try {
-    const { nombre, email, contraseña, fecha_nacimiento, direccion, historial_medico, foto_perfil } = req.body;
+    const { nombre, email, contraseña, direccion, fecha_nacimiento, genero } = req.body;
 
-    // Validación básica para asegurarse de que se proporcionen los campos obligatorios
-    if (!nombre || !email || !contraseña) {
-      return res.status(400).json({ error: 'Nombre, email y contraseña son obligatorios' });
+    // Validación para asegurarse de que se proporcionen los campos obligatorios
+    if (!nombre || !email || !contraseña || !direccion || !fecha_nacimiento || !genero) {
+      return res.status(400).json({ error: 'Todos los campos son obligatorios: nombre, email, contraseña, direccion, fecha de nacimiento y genero' });
     }
 
     const connection = await getConnection();
     const result = await connection.query(
-      `INSERT INTO pacientes (nombre, email, contraseña, fecha_nacimiento, direccion, historial_medico, foto_perfil) 
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [nombre, email, contraseña, fecha_nacimiento, direccion, historial_medico, foto_perfil]
+      `INSERT INTO pacientes (nombre, email, contraseña, direccion, fecha_nacimiento, genero) 
+       VALUES (?, ?, ?, ?, ?, ?);`,
+      [nombre, email, contraseña, direccion, fecha_nacimiento, genero]
     );
 
     res.status(201).json({ message: 'Paciente creado exitosamente', id: result[0].insertId });
@@ -22,6 +22,7 @@ const createPatient = async (req, res) => {
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 };
+
 const getPatientByEmailAndPassword = async (req, res) => {
   try {
     const { email, contraseña } = req.body;
@@ -37,8 +38,7 @@ const getPatientByEmailAndPassword = async (req, res) => {
     ]);
 
     if (result.length > 0) {
-      const token = jwt.sign({ id_paciente: result[0].id_paciente }, 'secretKey', { expiresIn: '1h' });
-      res.status(200).json({ message: 'Paciente encontrado', token });
+      res.status(200).json({ message: 'Paciente encontrado', paciente: result[0] });
     } else {
       res.status(404).json({ error: 'Paciente no encontrado' });
     }
