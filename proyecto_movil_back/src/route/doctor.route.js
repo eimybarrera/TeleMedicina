@@ -10,6 +10,6 @@ router.get('/medicos/:id/resena', metodosDoctor.getDoctorReviews);
 router.get('/medicos/:id/fechas-disponibles', metodosDoctor.getFechasDisponibles);
 router.get('/medicos/:doctorId/fechas-disponibles/:fechaId/horas-disponibles', metodosDoctor.getHorasDisponibles);
 
-router.post('/citas/confirmar', citas.confirmarCita);
+router.post('/citas/confirmar', citas.confirmarCita1);
 
 export default router;
