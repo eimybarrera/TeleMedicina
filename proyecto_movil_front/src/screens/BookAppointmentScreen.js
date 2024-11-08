@@ -14,24 +14,38 @@ const getDaysInMonth = (month, year) => {
   return days;
 };
 
-// Función para obtener los días en blanco necesarios para que el 1 caiga en martes
-const getEmptyDays = (startDay) => {
+// Función para encontrar el primer viernes del mes
+const getFirstFriday = (month, year) => {
+  const date = new Date(year, month, 1);
+  let dayOfWeek = date.getDay();
+  let daysUntilFriday = (5 - dayOfWeek + 7) % 7; // 5 es el índice para viernes
+  date.setDate(date.getDate() + daysUntilFriday);
+  return date;
+};
+
+// Función para obtener los días en blanco hasta el primer viernes
+const getEmptyDays = (firstFriday) => {
   const emptyDays = [];
+  const startDay = firstFriday.getDay(); // Día de la semana del primer viernes
   for (let i = 0; i < startDay; i++) {
     emptyDays.push(null);
   }
   return emptyDays;
 };
 
-const BookAppointmentScreen = () => {
+const BookAppointmentScreen = ({ route }) => {
+  const doctorId = route.params.id_doctor;
+  console.log('Doctor ID:', doctorId);
+  const patientId = 1; // ID del paciente por defecto (puedes cambiarlo o obtenerlo de otra forma)
+
   const today = new Date();
   const [selectedDate, setSelectedDate] = useState(today);
   const [selectedTime, setSelectedTime] = useState(null);
   const [isModalVisible, setModalVisible] = useState(false);
 
+  const firstFriday = getFirstFriday(today.getMonth(), today.getFullYear());
   const daysInMonth = getDaysInMonth(today.getMonth(), today.getFullYear());
-  const startDay = 2;
-  const emptyDays = getEmptyDays(startDay);
+  const emptyDays = getEmptyDays(firstFriday);
   const calendarDays = [...emptyDays, ...daysInMonth];
 
   const toggleModal = () => {
@@ -80,10 +94,46 @@ const BookAppointmentScreen = () => {
     </TouchableOpacity>
   );
 
+  // Función para confirmar la cita
+  const handleConfirm = async () => {
+    if (!selectedTime || !selectedDate) {
+      alert('Por favor selecciona la fecha y hora.');
+      return;
+    }
+
+    const fecha = selectedDate.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+    const hora = selectedTime; // Hora en formato 'HH:MM AM/PM'
+
+    try {
+      const response = await fetch('http://localhost:3000/citas/confirmar', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id_paciente: patientId,
+          id_doctor: doctorId,
+          fecha: fecha,
+          hora: hora,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toggleModal(); // Mostrar modal de éxito
+      } else {
+        alert('Error al confirmar la cita.');
+      }
+    } catch (error) {
+      console.error(error);
+      alert('Error de conexión');
+    }
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.selectTimeText}>Select Date</Text>
-      {/* Mostrar los días de la semana */}
+      <Text style={styles.selectTimeText}>Select Date: November 2024</Text>
       <View style={styles.weekContainer}>
         {daysOfWeek.map((day) => (
           <Text key={day} style={styles.weekDayText}>
@@ -101,7 +151,7 @@ const BookAppointmentScreen = () => {
       </View>
       <Text style={styles.selectTimeText}>Select Time:</Text>
       <View style={styles.timesContainer}>{availableTimes.map((time) => renderTimeOption(time))}</View>
-      <TouchableOpacity style={styles.button} onPress={toggleModal}>
+      <TouchableOpacity style={styles.button} onPress={handleConfirm}>
         <Text style={styles.buttontext}>Confirm</Text>
       </TouchableOpacity>
 
@@ -130,8 +180,8 @@ const styles = StyleSheet.create({
   },
   weekContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 10,
+    justifyContent: 'left',
+    marginBottom: 20,
     margin: 20,
   },
   weekDayText: {
@@ -152,12 +202,6 @@ const styles = StyleSheet.create({
   },
   selectedDay: {
     backgroundColor: '#1c2a3a',
-  },
-  selectedDateText: {
-    marginTop: 20,
-    textAlign: 'center',
-    fontSize: 16,
-    fontWeight: 'bold',
   },
   selectTimeText: {
     marginTop: 0,
@@ -183,12 +227,6 @@ const styles = StyleSheet.create({
   },
   selectedTime: {
     backgroundColor: '#1c2a3a',
-  },
-  selectedTimeText: {
-    marginTop: 20,
-    textAlign: 'center',
-    fontWeight: 'bold',
-    fontSize: 16,
   },
   button: {
     alignSelf: 'center',
@@ -220,18 +258,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-  },
-  closeButton: {
-    marginTop: 20,
-    backgroundColor: '#f0f0f0',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-  },
-  closeButtonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333',
   },
   modalTitle: {
     fontWeight: 'bold',
