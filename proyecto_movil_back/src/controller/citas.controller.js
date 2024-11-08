@@ -36,7 +36,6 @@ const obtenerCitas = async (req, res) => {
 };
 
 export const citas = {
-  confirmarCita,
   obtenerCitas,
   confirmarCita1,
 };
