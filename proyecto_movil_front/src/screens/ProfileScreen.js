@@ -1,6 +1,6 @@
+// ProfileScreen.js
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList } from 'react-native';
-
 
 const options = [
   { id: '1', title: 'Edit Profile' },
@@ -11,7 +11,12 @@ const options = [
   { id: '7', title: 'Log Out' },
 ];
 
-const Profile = ({ navigation }) => {
+const Profile = ({ navigation, route }) => {
+  const { userName, userEmail, userProfilePic } = route.params || {};
+
+  // URL de la imagen predeterminada
+  const defaultProfilePic = 'https://img.freepik.com/foto-gratis/encantadora-pareja-tiene-calido-abrazo_273609-44073.jpg?semt=ais_hybrid';
+
   const handleOptionPress = (item) => {
     if (item.id === '7') {
       navigation.navigate('StartScreen');
@@ -30,12 +35,13 @@ const Profile = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Profile</Text>
+      {/* Mostrar foto de perfil o imagen predeterminada si no existe */}
       <Image
-        source={require("../../assets/anciana.png")}
+        source={{ uri: userProfilePic || defaultProfilePic }}
         style={styles.profileImage}
       />
-      <Text style={styles.name}>Daniel Martinez</Text>
-      <Text style={styles.phone}>+123 856479683</Text>
+      <Text style={styles.name}>{userName || 'Usuario'}</Text>
+      <Text style={styles.email}>{userEmail || 'Correo no disponible'}</Text>
 
       <FlatList
         data={options}
@@ -69,7 +75,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  phone: {
+  email: {
     fontSize: 14,
     color: 'gray',
     marginBottom: 20,
