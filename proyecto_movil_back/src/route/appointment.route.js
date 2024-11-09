@@ -1,9 +1,10 @@
-import { Router } from 'express';
-import { citas } from '../controller/citas.controller.js';
+const express = require('express');
+const router = express.Router();
+const citasController = require('../controller/citas.controller');
 
-const router = Router();
+router.get('/paciente/:patientId', citasController.getAppointmentsByPatient);
+router.post('/confirmar', citasController.createAppointment);
+router.put('/:id', citasController.updateAppointment);
+router.delete('/:id', citasController.deleteAppointment);
 
-router.post('/confirm', citas.confirmarCita);
-router.get('/:id_paciente', citas.obtenerCitas);
-
-export default router;
+module.exports = router;

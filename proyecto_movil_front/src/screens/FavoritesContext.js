@@ -9,12 +9,12 @@ export const useFavorites = () => useContext(FavoritesContext);
 // Proveedor del contexto  
 export const FavoritesProvider = ({ children }) => {  
     const [favorites, setFavorites] = useState(() => {  
-        // Leer los favoritos iniciales desde localStorage  
+        //favoritos localStorage  
         const savedFavorites = localStorage.getItem('favorites');  
         return savedFavorites ? JSON.parse(savedFavorites) : [];  
     });  
 
-    // Efecto para guardar los favoritos en localStorage cada vez que cambian  
+    // Efecto para guardarlos  
     useEffect(() => {  
         localStorage.setItem('favorites', JSON.stringify(favorites));  
     }, [favorites]);  
@@ -35,4 +35,4 @@ export const FavoritesProvider = ({ children }) => {
             {children}  
         </FavoritesContext.Provider>  
     );  
-};
+}

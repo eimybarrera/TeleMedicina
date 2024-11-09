@@ -1,29 +1,82 @@
-import React, { useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
-const AppointmentsScreen = ({route}) => {
+const AppointmentsScreen = () => {
 const [appointments, setAppointments] = useState([]);
-//const { id_paciente } = route.params;
-
 const navigation = useNavigation();
 
-// useEffect(() => {
-//     fetch(`http://localhost:3000/citas/${id_paciente}`)
-//     .then((response) => response.json())
-//     .then((data) => setAppointments(data))
-//     .catch((error) => console.error('Error fetching appointments:', error));
-// }, [id_paciente]);
+useEffect(() => {
+    const fetchAppointments = async () => {
+    try {
+        const patientId = await AsyncStorage.getItem('patientId');
+        if (patientId) {
+        const response = await fetch(`http://localhost:3000/citas/paciente/${patientId}`);
+        const data = await response.json();
+        setAppointments(data);
+        }
+    } catch (error) {
+        console.error("Error al obtener citas:", error);
+    }
+    };
+
+    fetchAppointments();
+}, []);
+
+const handleEditAppointment = (appointment) => {
+    // Navegar a una pantalla de edición, pasando los detalles de la cita
+    navigation.navigate('EditAppointment', { appointment });
+};
+
+const handleDeleteAppointment = async (appointmentId) => {
+    try {
+    const response = await fetch(`http://localhost:3000/citas/${appointmentId}`, {
+        method: 'DELETE',
+    });
+    if (response.ok) {
+        setAppointments(appointments.filter((appointment) => appointment.id_cita !== appointmentId));
+        Alert.alert("Cita eliminada", "La cita ha sido eliminada con éxito.");
+    } else {
+        Alert.alert("Error", "No se pudo eliminar la cita.");
+    }
+    } catch (error) {
+    console.error("Error al eliminar cita:", error);
+    Alert.alert("Error", "Ocurrió un error al intentar eliminar la cita.");
+    }
+};
 
 const renderAppointment = ({ item }) => (
     <View style={styles.appointmentContainer}>
         <Text style={styles.text}>Doctor: {item.doctor}</Text>
-        <Text style={styles.text}>Especialidad: {item.specialty}</Text>
+        <Text style={styles.text}>Especialidad: {item.especialidad}</Text>
         <Text style={styles.text}>Fecha: {item.date}</Text>
         <Text style={styles.text}>Hora: {item.time}</Text>
+        <Text style={[styles.text, getStatusStyle(item.estado)]}>Estado: {item.estado}</Text>
+        <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.editButton} onPress={() => handleEditAppointment(item)}>
+                <Text style={styles.buttonText}>Editar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteAppointment(item.id_cita)}>
+                <Text style={styles.buttonText}>Eliminar</Text>
+            </TouchableOpacity>
+        </View>
     </View>
 );
+
+const getStatusStyle = (estado) => {
+    switch (estado) {
+        case 'confirmada':
+            return { color: 'green' };
+        case 'pendiente':
+            return { color: 'orange' };
+        case 'cancelada':
+            return { color: 'red' };
+        default:
+            return { color: 'black' };
+    }
+};
 
 return (
     <View style={styles.container}>
@@ -37,7 +90,7 @@ return (
     <FlatList
         data={appointments}
         renderItem={renderAppointment}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id_cita.toString()}
     />
     </View>
 );
@@ -49,9 +102,6 @@ container: {
     padding: 20,
     backgroundColor: '#fff',
 },
-backButton: {
-    marginBottom: 20,
-},
 header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -60,7 +110,7 @@ header: {
 title: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginLeft: 10, 
+    marginLeft: 10,
 },
 divider: {
     height: 1,
@@ -75,6 +125,25 @@ appointmentContainer: {
 },
 text: {
     fontSize: 16,
+},
+buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
+},
+editButton: {
+    backgroundColor: '#4CAF50',
+    padding: 10,
+    borderRadius: 5,
+},
+deleteButton: {
+    backgroundColor: '#F44336',
+    padding: 10,
+    borderRadius: 5,
+},
+buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
 },
 });
 

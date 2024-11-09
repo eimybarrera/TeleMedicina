@@ -1,7 +1,6 @@
-// Ejemplo de rutas de favoritos en el backend
 const express = require('express');
 const router = express.Router();
-const db = require('./database'); // Asegúrate de importar correctamente la conexión a la base de datos
+const db = require('../database/database');
 
 // Obtener favoritos de un usuario
 router.get('/favoritos/:id_paciente', async (req, res) => {
