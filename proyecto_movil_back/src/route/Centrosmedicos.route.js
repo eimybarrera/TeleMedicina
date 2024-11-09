@@ -4,6 +4,6 @@ import { metodosCentrosYDoctores } from '../controller/CentrosMedicos.controller
 const router = Router();
 
 router.get('/centros', metodosCentrosYDoctores.getMedicalCenterInfo);
-router.get('/medicos/:id_centro', metodosCentrosYDoctores.getMedicosPorCentro);
+router.get('/centros/:nombreCentro', metodosCentrosYDoctores.getMedicosPorCentro);
 
 export default router;
