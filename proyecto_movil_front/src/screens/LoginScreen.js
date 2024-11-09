@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState } from 'react';
 import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -25,6 +26,9 @@ const LoginScreen = ({ navigation }) => {
         const userName = data.paciente.nombre; // Nombre del usuario
         const userEmail = data.paciente.email; // Email del usuario
         const userProfilePic = data.paciente.foto_perfil; // URL de la foto de perfil
+        const patientId = data.paciente.id_paciente;
+        await AsyncStorage.setItem('patientId', patientId.toString());
+        console.log('Patient ID guardado en la base de datos:', patientId);
         setError('');
         // Navegamos a la pantalla de perfil y pasamos el nombre, el email y la foto de perfil
         navigation.navigate('Main', { screen: 'Profile', params: { userName, userEmail, userProfilePic } });
@@ -47,12 +51,7 @@ const LoginScreen = ({ navigation }) => {
 
       <View style={styles.inputContainer}>
         <Icon name='mail-outline' size={20} color='#6B7280' style={styles.icon} />
-        <TextInput
-          placeholder='Your Email'
-          style={styles.input}
-          value={email}
-          onChangeText={setEmail}
-        />
+        <TextInput placeholder='Your Email' style={styles.input} value={email} onChangeText={setEmail} />
       </View>
 
       <View style={styles.inputContainer}>
