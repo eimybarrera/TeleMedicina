@@ -1,60 +1,60 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import doctorsData from './database/database';
 import { useFavorites } from './FavoritesContext';
 
 const Espes = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const { category } = route.params;
+  const [doctors, setDoctors] = useState([]);
   const [filteredDoctors, setFilteredDoctors] = useState([]);
-  const { favorites, toggleFavorite } = useFavorites(); //para comunicar con los favs
+  const { favorites, toggleFavorite } = useFavorites();
+  const [loading, setLoading] = useState(true);
 
-  // Filtra los doctores en función de la categoría recibida
+  // Obtén los datos de los doctores desde la API
   useEffect(() => {
-    const filteredData = doctorsData.filter((doctor) => doctor.specialty.toLowerCase() === category.toLowerCase());
-    setFilteredDoctors(filteredData);
+    axios
+      .get('http://localhost:3000/medicos') // Cambia la URL si es necesario
+      .then((response) => {
+        setDoctors(response.data);
+        // Filtra los doctores por categoría después de obtener los datos
+        const filteredData = response.data.filter(
+          (doctor) => doctor.specialty.toLowerCase() === category.toLowerCase()
+        );
+        setFilteredDoctors(filteredData);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error fetching doctors:', error);
+        setLoading(false);
+      });
   }, [category]);
 
-  // Función para navegar a la pantalla de detalles del doctor
   const navigateToDoctorDetail = (doctorId) => {
-    console.log('Doctor ID:', doctorId);
-    navigation.navigate('Doctor Details', { doctorId: doctorId });
+    navigation.navigate('DoctorDetails', { doctorId });
   };
 
   const renderDoctorCard = (item) => {
-    const isFavorite = favorites.some((fav) => fav.id === item.id); //ver si esta en favs
+    const isFavorite = favorites.some((fav) => fav.id === item.id);
 
-  return(
-    <TouchableOpacity
-      style={styles.card}
-      key={item.id}
-      onPress={() => navigateToDoctorDetail(item.id)} // Navegar al detalle del doctor
-    >
-      <View style={styles.cardContainer}>
-        <Image source={{ uri: item.imageUrl }} style={styles.image} />
-        <View style={styles.cardContent}>
-          <Text style={styles.name}>{item.name}</Text>
-          <Text style={styles.specialty}>{item.specialty}</Text>
-          <Text style={styles.center}>{item.medicalCenter}</Text>
-          <View style={styles.ratingContainer}>
-            <Text style={styles.rating}>★ {item.rating}</Text>
-            <Text style={styles.reviews}> | {item.reviews} Reviews</Text>
+    return (
+      <TouchableOpacity style={styles.card} key={item.id} onPress={() => navigateToDoctorDetail(item.id)}>
+        <View style={styles.cardContainer}>
+          <Image source={{ uri: item.imageUrl }} style={styles.image} />
+          <View style={styles.cardContent}>
+            <Text style={styles.name}>{item.name}</Text>
+            <Text style={styles.specialty}>{item.specialty}</Text>
+            <Text style={styles.center}>{item.medicalCenter}</Text>
+            <View style={styles.ratingContainer}>
+              <Text style={styles.rating}>★ {item.rating}</Text>
+              <Text style={styles.reviews}> | {item.reviews} Reviews</Text>
+            </View>
           </View>
-        </View>
-
-        {/* Ícono de favorito */}
-        <TouchableOpacity
-            style={styles.heartIconContainer}
-            onPress={() => toggleFavorite(item)} // Marca o desmarca como favorito
-          >
-            <FontAwesome
-              name={isFavorite ? 'heart' : 'heart-o'} // Ícono lleno si es favorito
-              size={20}
-              color={isFavorite ? 'red' : '#000'}
-            />
+          <TouchableOpacity style={styles.heartIconContainer} onPress={() => toggleFavorite(item)}>
+            <FontAwesome name={isFavorite ? 'heart' : 'heart-o'} size={20} color={isFavorite ? 'red' : '#000'} />
           </TouchableOpacity>
         </View>
       </TouchableOpacity>
@@ -64,11 +64,15 @@ const Espes = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Doctores en {category}</Text>
-      <FlatList
-        data={filteredDoctors}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => renderDoctorCard(item)}
-      />
+      {loading ? (
+        <Text>Cargando doctores...</Text>
+      ) : (
+        <FlatList
+          data={filteredDoctors}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => renderDoctorCard(item)}
+        />
+      )}
     </View>
   );
 };
