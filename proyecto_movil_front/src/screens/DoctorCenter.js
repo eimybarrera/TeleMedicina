@@ -1,41 +1,51 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import doctorsData from './database/database'; // Asegúrate de que esta ruta sea correcta
 import { useFavorites } from './FavoritesContext';
 
 const DoctorCenter = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const { medicalCenter } = route.params; // Obtiene el centro médico de los parámetros de navegación
+  const { medicalCenterId } = route.params; // Recibimos el nombre del centro
   const [filteredDoctors, setFilteredDoctors] = useState([]);
-  const { favorites, toggleFavorite } = useFavorites(); // Para gestionar los favoritos
+  const [loading, setLoading] = useState(true);
+  const { favorites, toggleFavorite } = useFavorites(); // Para manejar los favoritos
 
-  // Filtra los doctores en función del centro médico recibido
+  // Obtiene los médicos de la API según el nombre del centro médico seleccionado
   useEffect(() => {
-    const filteredData = doctorsData.filter(
-      (doctor) => doctor.medicalCenter.toLowerCase() === medicalCenter.toLowerCase()
-    );
-    setFilteredDoctors(filteredData);
-  }, [medicalCenter]);
+    // Cambié la URL para utilizar el nombre del centro en lugar del ID
+    axios
+      .get(`http://localhost:3000/medicos/${medicalCenterId}`) // Usamos el nombre del centro
+      .then((response) => {
+        console.log('Médicos:', response.data); // Verifica que los datos sean correctos
+        setFilteredDoctors(response.data); // Actualiza el estado con los médicos
+        setLoading(false); // Desactiva el estado de carga
+      })
+      .catch((error) => {
+        console.error('Error al obtener los médicos:', error);
+        setLoading(false); // También desactiva el estado de carga en caso de error
+      });
+  }, [medicalCenterId]); // El efecto se ejecuta cuando cambia el nombre del centro
 
-  // Función para navegar a la pantalla de detalles del doctor
+  // Función para navegar a los detalles del doctor
   const navigateToDoctorDetail = (doctorId) => {
     console.log('Doctor ID:', doctorId);
-    navigation.navigate('Doctor Details', { doctorId: doctorId });
+    navigation.navigate('DoctorDetails', { doctorId: doctorId });
   };
 
+  // Renderiza la tarjeta de cada médico
   const renderDoctorCard = (item) => {
     const isFavorite = favorites.some((fav) => fav.id === item.id); // Verifica si está en favoritos
 
     return (
       <TouchableOpacity
         style={styles.card}
-        key={item.id}
-        onPress={() => navigateToDoctorDetail(item.id)} // Navegar al detalle del doctor
+        onPress={() => navigateToDoctorDetail(item.id)} // Navega al detalle del doctor
       >
         <View style={styles.cardContainer}>
+          {/* Imagen del médico */}
           <Image source={{ uri: item.imageUrl }} style={styles.image} />
           <View style={styles.cardContent}>
             <Text style={styles.name}>{item.name}</Text>
@@ -43,7 +53,8 @@ const DoctorCenter = () => {
             <Text style={styles.center}>{item.medicalCenter}</Text>
             <View style={styles.ratingContainer}>
               <Text style={styles.rating}>★ {item.rating}</Text>
-              <Text style={styles.reviews}> | {item.reviews} Reviews</Text>
+              <Text style={styles.reviews}> | {item.review} Reviews</Text>{' '}
+              {/* Reemplaza 'review' con la propiedad correcta si es necesario */}
             </View>
           </View>
 
@@ -53,7 +64,7 @@ const DoctorCenter = () => {
             onPress={() => toggleFavorite(item)} // Marca o desmarca como favorito
           >
             <FontAwesome
-              name={isFavorite ? 'heart' : 'heart-o'} // Ícono lleno si es favorito
+              name={isFavorite ? 'heart' : 'heart-o'} // Cambia el ícono según si está en favoritos
               size={20}
               color={isFavorite ? 'red' : '#000'}
             />
@@ -63,13 +74,19 @@ const DoctorCenter = () => {
     );
   };
 
+  // Si los datos aún se están cargando
+  if (loading) {
+    return <Text>Cargando médicos...</Text>;
+  }
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Doctores en {medicalCenter}</Text>
+      <Text style={styles.title}>Doctores en {medicalCenterId}</Text>
+      {/* FlatList para mostrar los médicos */}
       <FlatList
         data={filteredDoctors}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => renderDoctorCard(item)}
+        keyExtractor={(item) => item.id.toString()} // Asegúrate de que 'id' es único
+        renderItem={({ item }) => renderDoctorCard(item)} // Renderiza cada tarjeta de médico
       />
     </View>
   );

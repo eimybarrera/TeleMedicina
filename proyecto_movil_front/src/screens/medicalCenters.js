@@ -1,55 +1,61 @@
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-
-// Datos de los centros médicos
-const medicalCenters = [
-  { id: '1', uri: require('../../assets/WhatsApp Image 2024-10-18 at 9.26.33 PM.jpeg'), name: 'Healthy Heart Clinic' },
-  { id: '2', uri: require('../../assets/WhatsApp Image 2024-10-18 at 9.27.17 PM.jpeg'), name: 'Joyful Child Hospital' },
-  {
-    id: '3',
-    uri: require('../../assets/WhatsApp Image 2024-10-18 at 9.27.34 PM.jpeg'),
-    name: 'Healthy Skin Dermatology Center',
-  },
-  {
-    id: '4',
-    uri: require('../../assets/WhatsApp Image 2024-10-18 at 9.28.22 PM.jpeg'),
-    name: 'Radiant Smile Dental Clinic',
-  },
-  {
-    id: '5',
-    uri: require('../../assets/WhatsApp Image 2024-10-18 at 9.28.35 PM.jpeg'),
-    name: 'Healthy Brain Hospital',
-  },
-];
 
 const MedicalCenters = () => {
   const navigation = useNavigation();
+  const [medicalCenters, setMedicalCenters] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Función para manejar la selección de un hospital
+  useEffect(() => {
+    axios
+      .get('http://localhost:3000/centros') // URL de tu API
+      .then((response) => {
+        console.log('Centros médicos:', response.data); // Verifica la estructura de los datos
+        setMedicalCenters(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error('Error al obtener centros médicos:', error);
+        setLoading(false);
+      });
+  }, []);
+
   const handleHospitalSelect = (hospitalName) => {
-    navigation.navigate('DoctorCenter', { medicalCenter: hospitalName }); // Asegurando que se pasa el nombre del hospital
+    console.log('Centro médico seleccionado:', hospitalName);
+    navigation.navigate('DoctorCenter', { medicalCenterId: hospitalName });
   };
 
-  const renderCenter = ({ item }) => (
-    <View style={styles.centerContainer}>
-      <TouchableOpacity onPress={() => handleHospitalSelect(item.name)} style={styles.imageContainer}>
-        <Image source={item.uri} style={styles.image} />
-      </TouchableOpacity>
-      <Text style={styles.name}>{item.name}</Text>
-    </View>
-  );
+  const renderCenter = ({ item }) => {
+    if (!item.id || !item.nombre || !item.foto) {
+      return null; // Evita mostrar elementos incompletos
+    }
+
+    return (
+      <View style={styles.centerContainer}>
+        <TouchableOpacity onPress={() => handleHospitalSelect(item.nombre)} style={styles.imageContainer}>
+          <Image source={{ uri: item.foto }} style={styles.image} />
+        </TouchableOpacity>
+        <Text style={styles.name}>{item.nombre}</Text>
+      </View>
+    );
+  };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Medical Center</Text>
-      <FlatList
-        data={medicalCenters}
-        renderItem={renderCenter}
-        keyExtractor={(item) => item.id}
-        numColumns={2}
-        contentContainerStyle={styles.listContainer}
-      />
+      <Text style={styles.title}>Medical Centers</Text>
+      {loading ? (
+        <Text>Loading...</Text>
+      ) : (
+        <FlatList
+          data={medicalCenters}
+          renderItem={renderCenter}
+          keyExtractor={(item, index) => (item.id ? item.id.toString() : index.toString())} // Ajusta esto según el campo correcto
+          numColumns={2}
+          contentContainerStyle={styles.listContainer}
+        />
+      )}
     </View>
   );
 };
