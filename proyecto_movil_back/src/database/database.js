@@ -5,7 +5,7 @@ const getConnection = async () => {
   return mysql.createConnection({
     host: config.dbHost,
     user: 'root',
-    password: 'root',
+    password: 'maria0511',
     database: 'telemedicina',
     port: config.dbPort,
   });

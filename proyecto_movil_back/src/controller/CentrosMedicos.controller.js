@@ -24,7 +24,7 @@ const getMedicalCenterInfo = async (req, res) => {
 const getMedicosPorCentro = async (req, res) => {
   try {
     const connection = await getConnection();
-    const idcentro = req.params.nombreCentro; // Asegúrate de que este es el parámetro correcto
+    const nombreCentro = req.params.nombreCentro;
     const [result] = await connection.query(
       `
       SELECT 
@@ -42,8 +42,8 @@ const getMedicosPorCentro = async (req, res) => {
       LEFT JOIN 
         centros_medicos c ON m.id_centro = c.id_centro
       WHERE 
-        id_centro = ?`,
-      [idcentro]
+        c.nombre_centro = '?'`,
+      [nombreCentro]
     );
 
     if (result.length === 0) {
@@ -52,7 +52,7 @@ const getMedicosPorCentro = async (req, res) => {
 
     res.json(result);
   } catch (error) {
-    console.error(error); // Muestra el error en la consola
+    console.error(error);
     res.status(500).json({ error: 'Error interno del servidor' });
   }
 };
