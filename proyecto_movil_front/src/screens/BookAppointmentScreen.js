@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useEffect, useState } from 'react';
 import { FlatList, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -36,8 +37,7 @@ const getEmptyDays = (firstFriday) => {
 const BookAppointmentScreen = ({ route }) => {
   const doctorId = route.params.id_doctor;
   console.log('Doctor ID:', doctorId);
-  const patientId = 1; // ID del paciente por defecto (puedes cambiarlo o obtenerlo de otra forma)
-
+  const [patientId, setPatientId] = useState(null);
   const today = new Date();
   const [selectedDate, setSelectedDate] = useState(today);
   const [selectedTime, setSelectedTime] = useState(null);
@@ -47,6 +47,22 @@ const BookAppointmentScreen = ({ route }) => {
   const daysInMonth = getDaysInMonth(today.getMonth(), today.getFullYear());
   const emptyDays = getEmptyDays(firstFriday);
   const calendarDays = [...emptyDays, ...daysInMonth];
+
+  useEffect(() => {
+    const getPatientId = async () => {
+      try {
+        const id = await AsyncStorage.getItem('patientId');
+        if (id !== null) {
+          setPatientId(id);
+        } else {
+          console.error('ID del paciente no encontrado');
+        }
+      } catch (error) {
+        console.error('Error al recuperar el ID del paciente:', error);
+      }
+    };
+    getPatientId();
+  }, []);
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
