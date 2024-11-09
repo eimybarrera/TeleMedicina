@@ -1,32 +1,38 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';  
 
-// Contexto
-const FavoritesContext = createContext();
+// Contexto  
+const FavoritesContext = createContext();  
 
-// Hook personalizado 
-export const useFavorites = () => useContext(FavoritesContext);
+// Hook personalizado   
+export const useFavorites = () => useContext(FavoritesContext);  
 
-// Proveedor del contexto
-export const FavoritesProvider = ({ children }) => {
-const [favorites, setFavorites] = useState([]);
+// Proveedor del contexto  
+export const FavoritesProvider = ({ children }) => {  
+    const [favorites, setFavorites] = useState(() => {  
+        // Leer los favoritos iniciales desde localStorage  
+        const savedFavorites = localStorage.getItem('favorites');  
+        return savedFavorites ? JSON.parse(savedFavorites) : [];  
+    });  
 
-  // Función para agregar o quitar favoritos
-const toggleFavorite = (doctor) => {
-    console.log("Toggle favorite:", doctor);
-    setFavorites((prevFavorites) => {
-    if (prevFavorites.some((fav) => fav.id === doctor.id)) {
-        // Si ya está en favoritos, lo quitamos
-        return prevFavorites.filter((fav) => fav.id !== doctor.id);
-    } else {
-        // Si no está, lo agregamos
-        return [...prevFavorites, doctor];
-    }
-    });
-};
+    // Efecto para guardar los favoritos en localStorage cada vez que cambian  
+    useEffect(() => {  
+        localStorage.setItem('favorites', JSON.stringify(favorites));  
+    }, [favorites]);  
 
-return (
-    <FavoritesContext.Provider value={{ favorites, toggleFavorite }}>
-    {children}
-    </FavoritesContext.Provider>
-);
+    // Función para agregar o quitar favoritos  
+    const toggleFavorite = (doctor) => {  
+        setFavorites((prevFavorites) => {  
+            if (prevFavorites.some((fav) => fav.id === doctor.id)) {  
+                return prevFavorites.filter((fav) => fav.id !== doctor.id);  
+            } else {  
+                return [...prevFavorites, doctor];  
+            }  
+        });  
+    };  
+
+    return (  
+        <FavoritesContext.Provider value={{ favorites, toggleFavorite }}>  
+            {children}  
+        </FavoritesContext.Provider>  
+    );  
 };
